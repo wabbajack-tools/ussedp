@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ussedp</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Octodiff" Version="1.2.36" />
+      <PackageReference Include="Wabbajack.Hashing.xxHash64" Version="3.0.0-alpha5" />
+      <PackageReference Include="Wabbajack.Paths.IO" Version="3.0.0-alpha5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DTOs\DTOs.csproj" />
+    </ItemGroup>
+
+</Project>

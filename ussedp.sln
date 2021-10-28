@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchBuilder", "PatchBuilder\PatchBuilder.csproj", "{019A3FE8-720E-4EAA-A540-E48124054D4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOs", "DTOs\DTOs.csproj", "{40916AB9-D95A-48D2-BA59-A7A0B26BB332}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{019A3FE8-720E-4EAA-A540-E48124054D4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{019A3FE8-720E-4EAA-A540-E48124054D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{019A3FE8-720E-4EAA-A540-E48124054D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{019A3FE8-720E-4EAA-A540-E48124054D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
