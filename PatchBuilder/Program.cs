@@ -1,4 +1,5 @@
 ﻿
+using System.IO.Compression;
 using System.Text.Json;
 using DTOs;
 using Ussedp;
@@ -39,3 +40,14 @@ await JsonSerializer.SerializeAsync(os, instructions, new JsonSerializerOptions
 {
     WriteIndented = true,
 });
+await os.DisposeAsync();
+
+await using var outputStream = outputDir.Combine("patch.zip").Open(FileMode.Create, FileAccess.ReadWrite);
+using var archive = new ZipArchive(outputStream, ZipArchiveMode.Create, true);
+
+foreach (var file in outputDir.EnumerateFiles().Where(f => f.Extension != new Extension(".zip")))
+{
+    Console.WriteLine($"Compressing {file.RelativeTo(outputDir)}");
+    archive.CreateEntryFromFile(file.ToString(), file.RelativeTo(outputDir).ToString(), CompressionLevel.SmallestSize);
+    file.Delete();
+}

@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchBuilder", "PatchBuilde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOs", "DTOs\DTOs.csproj", "{40916AB9-D95A-48D2-BA59-A7A0B26BB332}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcher", "Patcher\Patcher.csproj", "{BAB676C2-F096-4AE1-ABA6-66A36B0EF5E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40916AB9-D95A-48D2-BA59-A7A0B26BB332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAB676C2-F096-4AE1-ABA6-66A36B0EF5E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB676C2-F096-4AE1-ABA6-66A36B0EF5E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB676C2-F096-4AE1-ABA6-66A36B0EF5E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB676C2-F096-4AE1-ABA6-66A36B0EF5E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

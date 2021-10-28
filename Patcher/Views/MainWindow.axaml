@@ -1,0 +1,26 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Patcher.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="320"
+        x:Class="Patcher.Views.MainWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="USSEDP - Patcher"
+        CanResize="False"
+        Width="540" Height="320">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="4">
+        <TextBlock Grid.Row="0" Margin="0, 4">Game Location:</TextBlock>
+        <TextBox x:Name="GameLocation" Grid.Row="1" IsEnabled="False" Margin="0, 4"></TextBox>
+        <Button Grid.Row="2" x:Name="StartButton" Margin="0, 4" Background="DarkGreen">
+            <TextBlock FontWeight="Bold" FontSize="20">Start Patching</TextBlock>
+        </Button>
+        <TextBox Grid.Row="3" Margin="0,4"></TextBox>
+    </Grid>
+
+</Window>
