@@ -1,3 +1,4 @@
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
@@ -21,6 +22,13 @@ namespace Patcher.Views
             {
                 this.OneWayBind(ViewModel, vm => vm.GamePath, view => view.GameLocation.Text,
                         p => p.ToString())
+                    .DisposeWith(disposables);
+
+                this.OneWayBind(ViewModel, vm => vm.LogLines, view => view.Log.Text,
+                        p => string.Join("\n", p))
+                    .DisposeWith(disposables);
+
+                this.BindCommand(ViewModel, vm => vm.StartPatching, view => view.StartButton)
                     .DisposeWith(disposables);
             });
             

@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="320"
         x:Class="Patcher.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
         Title="USSEDP - Patcher"
         CanResize="False"
         Width="540" Height="320">
@@ -20,7 +19,7 @@
         <Button Grid.Row="2" x:Name="StartButton" Margin="0, 4" Background="DarkGreen">
             <TextBlock FontWeight="Bold" FontSize="20">Start Patching</TextBlock>
         </Button>
-        <TextBox Grid.Row="3" Margin="0,4"></TextBox>
+        <TextBox Grid.Row="3" Margin="0,4" x:Name="Log"></TextBox>
     </Grid>
 
 </Window>
