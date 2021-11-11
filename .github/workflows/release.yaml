@@ -52,7 +52,7 @@ jobs:
         env:
           NEXUS_COOKIE: ${{ secrets.NEXUS_COOKIE}}
       - name: Upload File To Nexus
-        run: nexus-mods-uploader upload 169 ./Patcher.exe -v ${{ steps.date.outputs.date }}
+        run: nexus-mods-uploader upload 57618 ./Patcher.exe -v ${{ steps.date.outputs.date }}
         env:
           UNEX_COOKIES: ./cookies.txt
 
