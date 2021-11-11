@@ -1,0 +1,59 @@
+name: Create Release
+on:
+  workflow_dispatch:
+        
+env:
+  UNEX_APIKEY: ${{ secrets.NEXUS_API_KEY }}
+        
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        
+      - name: Setup .NET Core SDK 6.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: true
+            
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Install Nexus Uploader
+        run: dotnet tool install --global nexus-mods-uploader
+      - name: Build App
+        run: dotnet build
+      - name: Publish
+        run: dotnet publish Patcher -r win-x64 -c Release -p:PublishReadyToRun=true --self-contained -o ./ -p:PublishSingleFile=true -p:DebugType=embedded -p:IncludeAllContentForSelfExtract=true
+      - name: Windows signtool.exe code sign action
+        # You may pin to the exact commit or the version.
+        # uses: skymatic/code-sign-action@cfcc1c15b32938bab6dea25192045b6d2989e4d0
+        uses: skymatic/code-sign-action@v1.1.0
+        with:
+          certificate: "${{ secrets.CODE_CERT }}"
+          certificatesha1: "${{ secrets.CODE_CERT_SHA }}"
+          password: "${{ secrets.CODE_CERT_PW }}"
+          # The folder that contains the files to sign.
+          folder: ./
+          # Recursively search for supported files.
+          recursive: false
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Patcher.exe
+          path: Patcher.exe
+      - name: Export Cookies
+        run: echo "$NEXUS_COOKIE" > ./cookies.txt
+        shell: bash
+        env:
+          NEXUS_COOKIE: ${{ secrets.NEXUS_COOKIE}}
+      - name: Upload File To Nexus
+        run: nexus-mods-uploader upload 169 ./Patcher.exe -v ${{ steps.date.outputs.date }}
+        env:
+          UNEX_COOKIES: ./cookies.txt
+
+  

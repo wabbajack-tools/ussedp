@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
@@ -25,7 +26,7 @@ namespace Patcher.Views
                     .DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel, vm => vm.LogLines, view => view.Log.Text,
-                        p => string.Join("\n", p))
+                        p => string.Join("\n", p.Reverse()))
                     .DisposeWith(disposables);
 
                 this.BindCommand(ViewModel, vm => vm.StartPatching, view => view.StartButton)

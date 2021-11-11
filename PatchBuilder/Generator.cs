@@ -12,7 +12,7 @@ public static class Generator
         await using var s = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read);
         return await s.HashingCopy(Stream.Null, CancellationToken.None);
     }
-    public static async Task<Instruction> CompareAndGenerate(AbsolutePath src, AbsolutePath dest, RelativePath relativePath)
+    public static async Task<Instruction> CompareAndGenerate(AbsolutePath src, AbsolutePath dest, RelativePath relativePath, RelativePath fromFileRelative)
     {
         Console.WriteLine($"Checking {relativePath}");
         if (!dest.FileExists())
@@ -39,6 +39,7 @@ public static class Generator
             return new Instruction
             {
                 Method = ResultType.Patched,
+                FromFile = fromFileRelative.ToString(),
                 SrcHash = (long)srcHash,
                 DestHash = (long)destHash,
                 Path = relativePath.ToString()
@@ -54,16 +55,16 @@ public static class Generator
         };
     }
 
-    public static async Task<RelativePath> CreatePatch(RelativePath path, AbsolutePath fromPath, AbsolutePath toPath,
+    public static async Task<RelativePath> CreatePatch(RelativePath srcPath, RelativePath destPath, AbsolutePath fromPath, AbsolutePath toPath,
         AbsolutePath outDir)
     {
-        var oldData = await path.RelativeTo(fromPath).ReadAllBytesAsync();
-        var newData = await path.RelativeTo(toPath).ReadAllBytesAsync();
+        var oldData = await srcPath.RelativeTo(fromPath).ReadAllBytesAsync();
+        var newData = await destPath.RelativeTo(toPath).ReadAllBytesAsync();
 
         var guid = (await oldData.Hash()).ToHex() + "_" + (await newData.Hash()).ToHex();
         await using var os = guid.ToRelativePath().RelativeTo(outDir).Open(FileMode.Create, FileAccess.ReadWrite);
         
-        Console.WriteLine($"Diffing: {path}");
+        Console.WriteLine($"Diffing: {srcPath} -> {destPath}");
         OctoDiff.Create(oldData, newData, os);
         return guid.ToRelativePath();
     }

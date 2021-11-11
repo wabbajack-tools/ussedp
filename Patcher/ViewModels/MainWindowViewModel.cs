@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Reactive;
 using System.Reflection;
 using System.Text;
@@ -26,6 +28,8 @@ namespace Patcher.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
     {
+        private static HttpClient client = new();
+        private static Uri BaseURI = new Uri("https://github.com/wabbajack-tools/ussedp/releases/download/downgrade-se-%3Ese/");
         public ViewModelActivator Activator { get; }
         
         [Reactive]
@@ -80,14 +84,10 @@ namespace Patcher.ViewModels
             try
             {
                 Log("Running instructions");
-                var zipStream =
-                    typeof(MainWindowViewModel).Assembly.GetManifestResourceStream("Patcher.Resources.patch.zip");
+                var instructions = await client.GetFromJsonAsync<Instruction[]>(BaseURI + "instructions.json");
+                
 
-                using var archive = new ZipArchive(zipStream!, ZipArchiveMode.Read);
-                var instructions =
-                    await JsonSerializer.DeserializeAsync<Instruction[]>(archive.GetEntry("instructions.json")!.Open());
-
-                foreach (var file in instructions)
+                foreach (var file in instructions!.OrderByDescending(d => d.Method))
                 {
                     var fullPath = file.Path.ToRelativePath().RelativeTo(GamePath);
                     switch (file.Method)
@@ -107,7 +107,7 @@ namespace Patcher.ViewModels
 
                             break;
                         case ResultType.Patched:
-                            await PatchFile(file, fullPath, archive);
+                            await PatchFile(file, GamePath);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -124,10 +124,10 @@ namespace Patcher.ViewModels
 
         }
 
-        private async Task PatchFile(Instruction file, AbsolutePath fullPath, ZipArchive archive)
+        private async Task PatchFile(Instruction file, AbsolutePath gamePath)
         {
             Log($"Patching {file.Path}");
-            var oldData = await fullPath.ReadAllBytesAsync();
+            var oldData = await file.FromFile.ToRelativePath().RelativeTo(gamePath).ReadAllBytesAsync();
             var oldHash = await oldData.Hash();
             if (oldHash != Hash.FromLong(file.SrcHash))
             {
@@ -143,11 +143,9 @@ namespace Patcher.ViewModels
             }
             Log("Pre-check passed, patching file");
 
-            var patchEntry = archive.GetEntry(file.PatchFile);
-            await using var ed = patchEntry!.Open();
-            var ms = new MemoryStream();
-            await ed.CopyToAsync(ms);
-            ms.Position = 0;
+            Log($"Downloading Patch File {file.PatchFile}");
+            var patchFile = await client.GetByteArrayAsync(BaseURI + file.PatchFile);
+            var ms = new MemoryStream(patchFile);
 
             var deltaApplier = new DeltaApplier();
             var os = new MemoryStream();
@@ -162,7 +160,7 @@ namespace Patcher.ViewModels
             
             Log("File verifed, writing file");
 
-            await fullPath.WriteAllBytesAsync(os.ToArray());
+            await file.Path.ToRelativePath().RelativeTo(GamePath).WriteAllBytesAsync(os.ToArray());
             
             Log("File patched");
         }

@@ -10,4 +10,5 @@ public class Instruction
     public string PatchFile { get; set; }
     public long SrcHash { get; set; }
     public long DestHash { get; set; }
+    public string FromFile { get; set; }
 }

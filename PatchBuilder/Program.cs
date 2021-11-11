@@ -1,5 +1,9 @@
 ﻿
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text.Json;
 using DTOs;
 using Ussedp;
@@ -14,22 +18,36 @@ var outputDir = args[2].ToAbsolutePath();
 
 var results = new List<Instruction>();
 
+foreach (var toFile in toDir.EnumerateFiles())
+{
+    var relative = toFile.RelativeTo(toDir);
+    var fromFile = relative.RelativeTo(fromDir);
+    if (!fromFile.FileExists())
+    {
+        fromFile = fromDir.Combine("SkyrimSELauncher.exe");
+    }
+
+    results.Add(await Generator.CompareAndGenerate(fromFile, toFile, relative, fromFile.RelativeTo(fromDir)));
+}
+
 foreach (var fromFile in fromDir.EnumerateFiles())
 {
     var relative = fromFile.RelativeTo(fromDir);
     var toFile = relative.RelativeTo(toDir);
 
-    results.Add(await Generator.CompareAndGenerate(fromFile, toFile, relative));
+    results.Add(await Generator.CompareAndGenerate(fromFile, toFile, relative, relative));
 }
+
+
 
 var toPatch = results.Where(p => p.Method == ResultType.Patched).ToList();
 
 Console.WriteLine($"Building {toPatch.Count} patches");
 
-foreach (var patch in toPatch)
+await Parallel.ForEachAsync(toPatch, new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount}, async (patch, _) =>
 {
-    patch.PatchFile = (await Generator.CreatePatch(patch.Path.ToRelativePath(), fromDir, toDir, outputDir)).ToString();
-}
+    patch.PatchFile = (await Generator.CreatePatch(patch.FromFile.ToRelativePath(), patch.Path.ToRelativePath(), fromDir, toDir, outputDir)).ToString();
+});
 
 var instructions = results.Where(r => r.Method != ResultType.Identical).ToList();
 
@@ -42,6 +60,7 @@ await JsonSerializer.SerializeAsync(os, instructions, new JsonSerializerOptions
 });
 await os.DisposeAsync();
 
+/*
 await using var outputStream = outputDir.Combine("patch.zip").Open(FileMode.Create, FileAccess.ReadWrite);
 using var archive = new ZipArchive(outputStream, ZipArchiveMode.Create, true);
 
@@ -51,3 +70,4 @@ foreach (var file in outputDir.EnumerateFiles().Where(f => f.Extension != new Ex
     archive.CreateEntryFromFile(file.ToString(), file.RelativeTo(outputDir).ToString(), CompressionLevel.SmallestSize);
     file.Delete();
 }
+*/
