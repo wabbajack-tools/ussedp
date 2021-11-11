@@ -13,13 +13,16 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="4">
-        <TextBlock Grid.Row="0" Margin="0, 4">Game Location:</TextBlock>
-        <TextBox x:Name="GameLocation" Grid.Row="1" IsEnabled="False" Margin="0, 4"></TextBox>
-        <Button Grid.Row="2" x:Name="StartButton" Margin="0, 4" Background="DarkGreen">
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="4" ColumnDefinitions="*, Auto">
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0, 4">Game Location:</TextBlock>
+        <TextBox x:Name="GameLocation" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False" Margin="0, 4"></TextBox>
+        <Button Grid.Row="2" Grid.ColumnSpan="2" x:Name="StartButton" Margin="0, 4" Background="DarkGreen">
             <TextBlock FontWeight="Bold" FontSize="20">Start Patching</TextBlock>
         </Button>
-        <TextBox Grid.Row="3" Margin="0,4" x:Name="Log"></TextBox>
+        <Button Grid.Row="2" Grid.Column="1" Click="OpenPatreon">
+            <TextBlock FontWeight="Bold" FontSize="20">Support By Donating on the Nexus</TextBlock>
+        </Button>
+        <TextBox Grid.Row="3" Grid.ColumnSpan="2" Margin="0,4" x:Name="Log"></TextBox>
     </Grid>
 
 </Window>

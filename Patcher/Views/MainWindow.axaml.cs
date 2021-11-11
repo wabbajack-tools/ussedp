@@ -1,12 +1,18 @@
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Patcher.ViewModels;
 using ReactiveUI;
+using Wabbajack.Paths;
+using Wabbajack.Paths.IO;
 
 namespace Patcher.Views
 {
@@ -34,7 +40,21 @@ namespace Patcher.Views
             });
             
         }
-        
 
+
+        private void OpenPatreon(object? sender, RoutedEventArgs e)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var info = new ProcessStartInfo()
+                {
+                    FileName = "cmd.exe".ToRelativePath()
+                        .RelativeTo(Environment.GetFolderPath(Environment.SpecialFolder.System).ToAbsolutePath())
+                        .ToString(),
+                    Arguments = "/C rundll32 url.dll,FileProtocolHandler https://www.nexusmods.com/users/17252164"
+                };
+                Process.Start(info);
+            }
+        }
     }
 }

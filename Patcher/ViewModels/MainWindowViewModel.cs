@@ -29,7 +29,7 @@ namespace Patcher.ViewModels
     public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
     {
         private static HttpClient client = new();
-        private static Uri BaseURI = new Uri("https://github.com/wabbajack-tools/ussedp/releases/download/downgrade-se_se/");
+        private static Uri BaseURI = new ("https://ussedp.wabbajack.org/");
         public ViewModelActivator Activator { get; }
         
         [Reactive]
@@ -84,7 +84,7 @@ namespace Patcher.ViewModels
             try
             {
                 Log("Running instructions");
-                var instructions = await client.GetFromJsonAsync<Instruction[]>(BaseURI + "instructions.json");
+                var instructions = await client.GetFromJsonAsync<Instruction[]>(BaseURI + "instructions_2.json");
                 
 
                 foreach (var file in instructions!.OrderByDescending(d => d.Method))
