@@ -2,4 +2,5 @@ Game: skyrimspecialedition
 ModId: 57618
 FileName: Patcher.exe
 PreviousFile: Patcher.exe
-Now handles the downgrade from 1.6.318 -> 1.5.97, also reversed the log order so it's easier to read
+FileDescription: |-
+  Now handles the downgrade from 1.6.318 -> 1.5.97, also reversed the log order so it's easier to read
