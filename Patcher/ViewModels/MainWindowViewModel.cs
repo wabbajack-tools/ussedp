@@ -29,7 +29,7 @@ namespace Patcher.ViewModels
     public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
     {
         private static HttpClient client = new();
-        private static Uri BaseURI = new Uri("https://github.com/wabbajack-tools/ussedp/releases/download/downgrade-se-%3Ese/");
+        private static Uri BaseURI = new Uri("https://github.com/wabbajack-tools/ussedp/releases/download/downgrade-se_se/");
         public ViewModelActivator Activator { get; }
         
         [Reactive]
