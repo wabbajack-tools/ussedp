@@ -18,6 +18,7 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.10" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.10" />
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="1.7.1" />
+    <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.5.5" />
     <PackageReference Include="Octodiff" Version="1.2.36" />
     <PackageReference Include="ReactiveUI.Fody" Version="16.2.6" />

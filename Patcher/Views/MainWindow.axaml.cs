@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Mixins;
@@ -55,6 +57,26 @@ namespace Patcher.Views
                 };
                 Process.Start(info);
             }
+        }
+
+        private void FindGameFile(object? sender, RoutedEventArgs e)
+        {
+            Task.Run(async () =>
+            {
+                var fod = new OpenFileDialog();
+                fod.Filters = new List<FileDialogFilter>
+                {
+                    new()
+                    {
+                        Name = "SkyrimSE.exe",
+                        Extensions = new[] {"exe"}.ToList()
+                    }
+                };
+                var result = await fod.ShowAsync(this);
+                if (result == null) return;
+
+                ViewModel!.GamePath = result.First().ToAbsolutePath().Parent;
+            });
         }
     }
 }

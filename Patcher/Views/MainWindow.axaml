@@ -3,6 +3,7 @@
         xmlns:vm="using:Patcher.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="320"
         x:Class="Patcher.Views.MainWindow"
         Title="USSEDP - Patcher"
@@ -13,16 +14,19 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="4" ColumnDefinitions="*, Auto">
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Margin="0, 4">Game Location:</TextBlock>
-        <TextBox x:Name="GameLocation" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False" Margin="0, 4"></TextBox>
-        <Button Grid.Row="2" Grid.ColumnSpan="2" x:Name="StartButton" Margin="0, 4" Background="DarkGreen">
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="4" ColumnDefinitions="Auto, *, Auto">
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Margin="0, 4">Game Location:</TextBlock>
+        <Button Grid.Row="1" Grid.Column="0" Margin="0, 4, 4, 4" Click="FindGameFile">
+            <i:MaterialIcon Kind="Folder"></i:MaterialIcon>
+        </Button>
+        <TextBox x:Name="GameLocation" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" IsEnabled="False" Margin="0, 4"></TextBox>
+        <Button Grid.Row="2" Grid.ColumnSpan="3" x:Name="StartButton" Margin="0, 4" Background="DarkGreen">
             <TextBlock FontWeight="Bold" FontSize="20">Start Patching</TextBlock>
         </Button>
-        <Button Grid.Row="2" Grid.Column="1" Click="OpenPatreon">
+        <Button Grid.Row="2" Grid.Column="2" Click="OpenPatreon">
             <TextBlock FontWeight="Bold" FontSize="20">Support By Donating on the Nexus</TextBlock>
         </Button>
-        <TextBox Grid.Row="3" Grid.ColumnSpan="2" Margin="0,4" x:Name="Log"></TextBox>
+        <TextBox Grid.Row="3" Grid.ColumnSpan="3" Margin="0,4" x:Name="Log"></TextBox>
     </Grid>
 
 </Window>
