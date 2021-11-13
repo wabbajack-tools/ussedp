@@ -35,6 +35,8 @@ foreach (var fromFile in fromDir.EnumerateFiles())
     var relative = fromFile.RelativeTo(fromDir);
     var toFile = relative.RelativeTo(toDir);
 
+    if (results.Any(p => p.Path == relative.ToString())) continue;
+
     results.Add(await Generator.CompareAndGenerate(fromFile, toFile, relative, relative));
 }
 
