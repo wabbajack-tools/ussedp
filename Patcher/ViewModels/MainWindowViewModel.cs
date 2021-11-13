@@ -69,7 +69,7 @@ namespace Patcher.ViewModels
             catch (Exception ex)
             {
                 var msg = MessageBoxManager.GetMessageBoxStandardWindow("Error",
-                    $"Couldn't locate {game.MetaData().HumanFriendlyGameName} via Steam, you will have to locate it manually using the folder button");
+                    $"Couldn't locate {game.MetaData().HumanFriendlyGameName} via Steam, you will have to locate it manually\n using the folder button");
                 await msg.Show();
             }
         }
