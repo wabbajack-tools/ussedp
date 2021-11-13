@@ -11,6 +11,7 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
 using Patcher.ViewModels;
 using ReactiveUI;
 using Wabbajack.Paths;
@@ -75,7 +76,9 @@ namespace Patcher.Views
                 var result = await fod.ShowAsync(this);
                 if (result == null) return;
 
-                ViewModel!.GamePath = result.First().ToAbsolutePath().Parent;
+                Dispatcher.UIThread.Post(() => {
+                    ViewModel!.GamePath = result.First().ToAbsolutePath().Parent;
+                });
             });
         }
     }
