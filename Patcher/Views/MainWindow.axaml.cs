@@ -61,7 +61,8 @@ namespace Patcher.Views
 
         private void FindGameFile(object? sender, RoutedEventArgs e)
         {
-            Task.Run(async () =>
+            string[] result = new string[1];
+            var task = Task.Run(async () =>
             {
                 var fod = new OpenFileDialog();
                 fod.Filters = new List<FileDialogFilter>
@@ -72,11 +73,12 @@ namespace Patcher.Views
                         Extensions = new[] {"exe"}.ToList()
                     }
                 };
-                var result = await fod.ShowAsync(this);
+                result = await fod.ShowAsync(this);
                 if (result == null) return;
-
-                ViewModel!.GamePath = result.First().ToAbsolutePath().Parent;
             });
+            task.Wait();
+            
+            ViewModel!.GamePath = result.First().ToAbsolutePath().Parent;
         }
     }
 }
