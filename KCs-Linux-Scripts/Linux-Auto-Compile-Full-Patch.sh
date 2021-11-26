@@ -17,7 +17,7 @@ else
     echo "patch files already downloaded"
 fi
 
-if [ ! -d "~/ussedp/FullPatcher" ]
+if [ ! -d "/home/$(whoami)/ussedp/FullPatcher" ]
 then
     7z x -y 'Patch Files-57618-1-5-1-1637899588.7z?token=KhZ-MZViNgaUYlpcobtoSQ&expires=1637920582&user_id=36400125&rip=75.130.137.33'
 else
@@ -26,7 +26,7 @@ fi
 
 rsync -avx ~/ussedp/FullPatcher/ ~/ussedp/Patcher/bin/Debug/net6.0/
 
-if [ -d "~/Linux-ussedp-FullPatcher" ]
+if [ -d "/home/$(whoami)/Linux-ussedp-FullPatcher" ]
 then
     rm -r ~/Linux-ussedp-FullPatcher/
 else
@@ -35,7 +35,7 @@ fi
 
 rsync -avx ~/ussedp/Patcher/bin/Debug/net6.0/ ~/Linux-ussedp-FullPatcher/
 
-if [ -f "~/ussedp-FullPatcher.sh" ]
+if [ -f "/home/$(whoami)/ussedp-FullPatcher.sh" ]
 then
     rm ~/ussedp-FullPatcher.sh
 else
