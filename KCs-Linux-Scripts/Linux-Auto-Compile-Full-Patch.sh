@@ -33,7 +33,7 @@ else
     echo "dir ready"
 fi
 
-echo $sudoPW | sudo -S rsync -avx /home/$(whoami)/ussedp/Patcher/bin/Debug/net6.0/ /home/$(whoami)/Linux-ussedp-FullPatcher/
+rsync -avx /home/$(whoami)/ussedp/Patcher/bin/Debug/net6.0/ /home/$(whoami)/Linux-ussedp-FullPatcher/
 
 if [ -f "/home/$(whoami)/ussedp-FullPatcher.sh" ]
 then
