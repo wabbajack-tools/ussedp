@@ -7,7 +7,7 @@ git clone https://github.com/wabbajack-tools/ussedp
 cd ussedp
 
 echo "Enter Your Password Below:"
-sudo dotnet build
+sudo dotnet build -c release
 
 
 if [ ! -f "Patch Files-57618-1-5-1-1637899588.7z?token=KhZ-MZViNgaUYlpcobtoSQ&expires=1637920582&user_id=36400125&rip=75.130.137.33" ]
