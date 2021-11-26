@@ -6,7 +6,7 @@ git clone https://github.com/wabbajack-tools/ussedp
 
 cd ussedp
 
-echo "Enter Your Password Below:"
+echo "Enter Your sudo Password Below:"
 sudo dotnet build -c release
 
 
@@ -24,7 +24,7 @@ else
     echo "patch files already installed"
 fi
 
-rsync -avx ~/ussedp/FullPatcher/ ~/ussedp/Patcher/bin/Debug/net6.0/
+rsync -avx ~/ussedp/FullPatcher/ ~/ussedp/Patcher/bin/Release/net6.0/
 
 if [ -d "/home/$(whoami)/Linux-ussedp-FullPatcher" ]
 then
@@ -33,7 +33,7 @@ else
     echo "dir ready"
 fi
 
-rsync -avx ~/ussedp/Patcher/bin/Debug/net6.0/ ~/Linux-ussedp-FullPatcher/
+rsync -avx ~/ussedp/Patcher/bin/Release/net6.0/ ~/Linux-ussedp-FullPatcher/
 
 if [ -f "/home/$(whoami)/ussedp-FullPatcher.sh" ]
 then
