@@ -19,6 +19,7 @@ using Octodiff.Core;
 using Octodiff.Diagnostics;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Ussedp;
 using Wabbajack.DTOs;
 using Wabbajack.Hashing.xxHash64;
 using Wabbajack.Paths;
@@ -39,7 +40,7 @@ namespace Patcher.ViewModels
         [Reactive] public string[] LogLines { get; set; } = Array.Empty<string>();
 
 
-        private void Log(string line)
+        public void Log(string line)
         {
             LogLines = LogLines.Append(line).ToArray();
         }
@@ -77,10 +78,11 @@ namespace Patcher.ViewModels
 
         private async Task Start()
         {
+            await Extractor.InitTable(this);
             try
             {
                 Log("Running instructions");
-                var instructions = JsonSerializer.Deserialize<Instruction[]>(await File.ReadAllBytesAsync("./patch/instructions.json"));
+                var instructions = JsonSerializer.Deserialize<Instruction[]>(await Extractor.LoadFile("instructions.json"));
                 
 
                 foreach (var file in instructions!.OrderByDescending(d => d.Method))
@@ -140,7 +142,7 @@ namespace Patcher.ViewModels
             Log("Pre-check passed, patching file");
 
             Log($"Downloading Patch File {file.PatchFile}");
-            var patchFile = await File.ReadAllBytesAsync("./patch/"+file.PatchFile);
+            var patchFile = await Extractor.LoadFile(file.PatchFile);
             var ms = new MemoryStream(patchFile);
 
             var deltaApplier = new DeltaApplier();
