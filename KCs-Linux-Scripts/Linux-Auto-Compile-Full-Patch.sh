@@ -1,6 +1,6 @@
 #/bin/bash
 
-cd ~/
+cd /home/$(whoami)/
 
 git clone https://github.com/wabbajack-tools/ussedp
 
@@ -13,18 +13,37 @@ echo $sudoPW | sudo -S dotnet build
 if [ ! -f "Patch Files-57618-1-5-1-1637899588.7z?token=KhZ-MZViNgaUYlpcobtoSQ&expires=1637920582&user_id=36400125&rip=75.130.137.33" ]
 then
     wget "https://premium-b.nexus-cdn.com/1704/57618/Patch Files-57618-1-5-1-1637899588.7z?token=KhZ-MZViNgaUYlpcobtoSQ&expires=1637920582&user_id=36400125&rip=75.130.137.33"
+else
+    echo "patch files already downloaded"
 fi
 
-7z x -y 'Patch Files-57618-1-5-1-1637899588.7z?token=KhZ-MZViNgaUYlpcobtoSQ&expires=1637920582&user_id=36400125&rip=75.130.137.33'
+if [ ! -d "/home/$(whoami)/ussedp/FullPatcher" ]
+then
+    7z x -y 'Patch Files-57618-1-5-1-1637899588.7z?token=KhZ-MZViNgaUYlpcobtoSQ&expires=1637920582&user_id=36400125&rip=75.130.137.33'
+else
+    echo "patch files already installed"
+fi
 
-rsync -avx ~/ussedp/FullPatcher/ ~/ussedp/Patcher/bin/Debug/net6.0/
+echo $sudoPW | sudo -S rsync -avx /home/$(whoami)/ussedp/FullPatcher/ /home/$(whoami)/ussedp/Patcher/bin/Debug/net6.0/
 
-mkdir Linux-ussedp-FullPatcher
+if [ -d "/home/$(whoami)/Linux-ussedp-FullPatcher" ]
+then
+    echo $sudoPW | sudo -S rm -r /home/$(whoami)/Linux-ussedp-FullPatcher/
+else
+    echo "dir ready"
+fi
 
-rsync -avx ~/ussedp/Patcher/bin/Debug/net6.0/ ~/Linux-ussedp-FullPatcher/
+echo $sudoPW | sudo -S rsync -avx /home/$(whoami)/ussedp/Patcher/bin/Debug/net6.0/ /home/$(whoami)/Linux-ussedp-FullPatcher/
 
-ln -s ~/Linux-ussedp-FullPatcher/Patcher ~/ussedp-FullPatcher
+if [ -f "/home/$(whoami)/ussedp-FullPatcher.sh" ]
+then
+    echo $sudoPW | sudo -S rm /home/$(whoami)/ussedp-FullPatcher.sh
+else
+    echo "script ready"
+fi
 
-cd ~/
+printf "#/bin/bash \ncd /home/$(whoami)/Linux-ussedp-FullPatcher/\n./Patcher\n" > /home/$(whoami)/ussedp-FullPatcher.sh
 
-./ussedp-FullPatcher
+echo $sudoPW | sudo -S chmod +x /home/$(whoami)/ussedp-FullPatcher.sh
+
+/home/$(whoami)/ussedp-FullPatcher.sh
