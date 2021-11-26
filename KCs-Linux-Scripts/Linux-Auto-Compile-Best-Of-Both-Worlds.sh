@@ -6,7 +6,7 @@ git clone https://github.com/wabbajack-tools/ussedp
 
 cd ussedp
 
-echo "Enter You Password Below:"
+echo "Enter Your sudo Password Below:"
 
 sudo dotnet build -c release
 
@@ -25,7 +25,7 @@ else
     echo "patch files already installed"
 fi
 
-rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Debug/net6.0/
+rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Release/net6.0/
 
 if [ -d "/home/$(whoami)/Linux-ussedp-BestOfBothWorlds" ]
 then
@@ -34,7 +34,7 @@ else
     echo "dir ready"
 fi
 
-rsync -avx ~/ussedp/Patcher/bin/Debug/net6.0/ ~/Linux-ussedp-BestOfBothWorlds/
+rsync -avx ~/ussedp/Patcher/bin/Release/net6.0/ ~/Linux-ussedp-BestOfBothWorlds/
 
 if [ -f "/home/$(whoami)/ussedp-BestOfBothWorlds.sh" ]
 then
