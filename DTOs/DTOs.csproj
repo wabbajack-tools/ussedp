@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
+      <PackageReference Include="Wabbajack.Hashing.xxHash64" Version="3.0.0-beta1" />
+      <PackageReference Include="Wabbajack.Paths" Version="3.0.0-beta1" />
+    </ItemGroup>
+
+</Project>
