@@ -1,5 +1,8 @@
 #/bin/bash
 
+echo "Enter Your sudo Password: "
+read -s PassWD
+
 cd ~
 
 git clone https://github.com/wabbajack-tools/ussedp
@@ -22,9 +25,9 @@ fi
 
 echo "Enter Your sudo Password Below:"
 
-sudo dotnet build -c release
+sudoecho "$PassWD" | sudo -S dotnet build -c release
 
-sudo rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Release/net6.0/
+sudoecho "$PassWD" | sudo -S rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Release/net6.0/
 
 if [ -d "/home/$(whoami)/Linux-ussedp-BestOfBothWorlds" ]
 then
