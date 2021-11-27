@@ -1,6 +1,0 @@
-Game: skyrimspecialedition
-ModId: 57618
-FileName: Patcher.exe
-PreviousFile: Patcher.exe
-FileDescription: |-
-  Now handles the downgrade from 1.6.318 -> 1.5.97, gets patches from a cdn with more bandwidth and caching. 
