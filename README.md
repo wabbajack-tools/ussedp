@@ -1,6 +1,11 @@
-so normal script stuff...
+# ussedp
+Unofficial Skyrim Special Edition Downgrade Patcher - Revert SE/AE games to older versions via binary patching
 
-### **DEPENDENCIES**
+# For Linux Users...
+
+instructions for using the linux auto compile scripts...
+
+## **DEPENDENCIES**
 
 most of it you will already have (exept dotnet-sdk)
 
@@ -18,7 +23,7 @@ you will need...
 
 #6: `zenity`
 
-### **Installaton/ Usage**
+## **Installaton/ Usage**
 
 step 1: download the script to your home directory
 
