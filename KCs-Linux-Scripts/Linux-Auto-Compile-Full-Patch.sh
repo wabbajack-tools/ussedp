@@ -13,7 +13,9 @@ done
 
 cd ~
 
-git clone https://github.com/wabbajack-tools/ussedp
+git clone https://github.com/wabbajack-tools/ussedp temp
+rsync -avx ~/temp/ ~/ussedp/
+rm -rf temp
 
 cd ussedp
 
