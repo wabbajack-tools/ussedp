@@ -23,8 +23,6 @@ else
     echo "patch files already installed"
 fi
 
-echo "Enter Your sudo Password Below:"
-
 echo "$PassWD" | sudo -S dotnet build -c release
 
 echo "$PassWD" | sudo -S rsync -avx ~/ussedp/FullPatcher/ ~/ussedp/Patcher/bin/Release/net6.0/
