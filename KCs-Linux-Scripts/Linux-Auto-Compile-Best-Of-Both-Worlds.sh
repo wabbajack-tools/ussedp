@@ -23,11 +23,9 @@ else
     echo "patch files already installed"
 fi
 
-echo "Enter Your sudo Password Below:"
+echo "$PassWD" | sudo -S dotnet build -c release
 
-sudoecho "$PassWD" | sudo -S dotnet build -c release
-
-sudoecho "$PassWD" | sudo -S rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Release/net6.0/
+echo "$PassWD" | sudo -S rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Release/net6.0/
 
 if [ -d "/home/$(whoami)/Linux-ussedp-BestOfBothWorlds" ]
 then
