@@ -1,7 +1,15 @@
 #/bin/bash
 
-echo "Enter Your sudo Password: "
+echo "Enter Your Sudo Password: "
 read -s PassWD
+
+while [ "$(echo "$PassWD" | sudo -S echo "true")" != "true" ]
+do
+    echo "..."
+    sleep 5
+    echo "Your Sudo Password Was Wrong Try Again: "
+    read -s PassWD
+done
 
 cd ~
 
@@ -29,14 +37,14 @@ echo "$PassWD" | sudo -S dotnet build -c release
 
 echo "$PassWD" | sudo -S rsync -avx ~/ussedp/BestOfBothWorlds/ ~/ussedp/Patcher/bin/Release/net6.0/
 
-if [ -d "/home/$(whoami)/Linux-ussedp-BestOfBothWorlds" ]
+if [ -d "/home/$(whoami)/ussedp-BestOfBothWorlds" ]
 then
-    rm -r ~/Linux-ussedp-BestOfBothWorlds/
+    rm -r ~/ussedp-BestOfBothWorlds/
 else
     echo "dir ready"
 fi
 
-rsync -avx ~/ussedp/Patcher/bin/Release/net6.0/ ~/Linux-ussedp-BestOfBothWorlds/
+rsync -avx ~/ussedp/Patcher/bin/Release/net6.0/ ~/ussedp-BestOfBothWorlds/
 
 if [ -f "/home/$(whoami)/ussedp-BestOfBothWorlds.sh" ]
 then
@@ -45,7 +53,7 @@ else
     echo "script ready"
 fi
 
-printf "#/bin/bash \ncd ~/Linux-ussedp-BestOfBothWorlds/\n./Patcher\n" > ~/ussedp-BestOfBothWorlds.sh
+printf "#/bin/bash \ncd ~/ussedp-BestOfBothWorlds/\n./Patcher\n" > ~/ussedp-BestOfBothWorlds.sh
 
 chmod +x ~/ussedp-BestOfBothWorlds.sh
 
