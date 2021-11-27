@@ -1,14 +1,12 @@
 #/bin/bash
 
-echo "Enter Your Sudo Password: "
-read -s PassWD
+PassWD="$(zenity --entry --title="Sudo Password" --text="Enter Your Sudo Password" --hide-text)"
 
 while [ "$(echo "$PassWD" | sudo -S echo "true")" != "true" ]
 do
     echo "..."
     sleep 5
-    echo "Your Sudo Password Was Wrong Try Again: "
-    read -s PassWD
+    PassWD="$(zenity --entry --title="Sudo Password" --text="Your Sudo Password Was Wrong Try Again" --hide-text)"
 done
 
 cd ~

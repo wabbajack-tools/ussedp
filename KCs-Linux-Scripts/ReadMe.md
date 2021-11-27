@@ -16,6 +16,8 @@ you will need...
 
 #5: `rsync`
 
+#6: `zenity`
+
 ### **Installaton/ Usage**
 
 step 1: download the script to your home directory
