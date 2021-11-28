@@ -7,7 +7,7 @@ Instructions for using the linux auto compile scripts...
 
 ## **DEPENDENCIES**
 
-Most of it you will already have (exept dotnet-sdk)
+Most of it you will already have **(Exept dotnet-sdk)**
 
 ### **You Will Need...**
 
