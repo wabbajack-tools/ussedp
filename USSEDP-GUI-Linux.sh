@@ -6,9 +6,9 @@ Patcher=$?
 if [ $Patcher -eq "0" ]
 then
     echo "best of both worlds"
-    gksu ./Linux-Auto-Compile-Best-Of-Both-Worlds.sh
+    gksu ./Auto-Compile-BoBW-Linux.sh
 elif [ $Patcher -eq "1" ]
 then
     echo "full patcher"
-    gksu ./Linux-Auto-Compile-Full-Patch.sh
+    gksu ./Auto-Compile-Full-Linux.sh
 fi

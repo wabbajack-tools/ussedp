@@ -11,7 +11,7 @@ runuser -u $(logname) -- bash<<_
 
     if [ ! -f "/home/$(logname)/ussedp/ussedp-patches.7z" ]
     then
-        wget "https://premium-b.nexus-cdn.com/1704/57618/Patch%20Files-57618-1-5-1-1637899588.7z?token=SkOMWYT9c36hUces-zOADA&expires=1637992338&user_id=36400125" -O ussedp-patches.7z
+        wget "$(cat patch-files-download-link)" -O ussedp-patches.7z
     else
         echo "patch files already downloaded"
     fi
