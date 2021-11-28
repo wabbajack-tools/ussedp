@@ -27,7 +27,7 @@ Most of it you will already have **(Exept `dotnet-sdk`)**
 
 ## **Installaton/ Usage**
 
-**Step 1**: Download the fork ether with `git clone https://github.com/KCkingcollin/ussedp` (In the **terminal**) or Click [**HERE**](https://github.com/KCkingcollin/ussedp/archive/refs/heads/linux-main.zip) to **download** the zip file and just **extract** the files somewhere on your computer
+**Step 1**: Download the fork ether with `git clone https://github.com/KCkingcollin/ussedp` (In the **terminal**) or **Click** [**HERE**](https://github.com/KCkingcollin/ussedp/archive/refs/heads/linux-main.zip) to **download** the zip file and just **extract** the files somewhere on your computer
 
 **Step 2**: Find the file `USSEDP-GUI-Linux.sh` and jsut **double click** that file to open the **GUI** **(If your distro doesn't support file manager execution youll need to run the script in the terminal with `/"TheLocationOfYourGitFiles/USSEDP-GUI-Linux.sh`)**
 
