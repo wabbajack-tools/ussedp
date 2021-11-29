@@ -23,10 +23,8 @@ Most of it you will already have **(Exept `dotnet-sdk`)**
 
 #6: `zenity`
 
-#7: `gksu`
-
 If you know how to install with your pakage manager in the terminal just do like normal and copy past this...
-`git dotnet-sdk wget p7zip rsync zenity gksu`
+`git dotnet-sdk wget p7zip rsync zenity`
 
 ## **Installaton/ Usage**
 
