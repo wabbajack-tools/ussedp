@@ -14,9 +14,10 @@ runuser -u $(logname) -- bash<<_
     if [ ! -f "/home/$(logname)/ussedp/ussedp-patches.7z" ]
     then
         echo "Downloading Patch Files From Nexus..."
-        wget "$(cat patches-download-link)" -O ussedp-patches.7z 2>&1 | 
-        sed -u 's/.* \([0-9]\+%\)\ \+\([0-9.]\+.\) \(.*\)/\1\n# Downloading Patch Files From Nexus... \2\/s, ETA \3/' | 
+        wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1lDxHD_bDwltsp88fhazXTngVozr6TDXh' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1lDxHD_bDwltsp88fhazXTngVozr6TDXh" -O ussedp-patches.7z 2>&1 |
+        sed -u 's/.* \([0-9]\+%\)\ \+\([0-9.]\+.\) \(.*\)/\1\n# Downloading Patch Files... \2\/s, ETA \3/' |
         zenity --progress --auto-close --no-cancel --title="Downloading..."
+        rm -rf /tmp/cookies.txt
     else
         echo "patch files already downloaded"
     fi
