@@ -25,6 +25,8 @@ Most of it you will already have **(Exept `dotnet-sdk`)**
 
 #7: `gksu`
 
+If you know how to install with your pakage manager in the terminal just do like normal and copy past this `git dotnet-sdk wget 7z rsync zenity gksu`
+
 ## **Installaton/ Usage**
 
 **Step 1**: Download the fork ether with `git clone https://github.com/KCkingcollin/ussedp` (In the **terminal**) or **Click** [**HERE**](https://github.com/KCkingcollin/ussedp/archive/refs/heads/linux-main.zip) to **download** the zip file and just **extract** the files somewhere on your computer
