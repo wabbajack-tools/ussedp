@@ -1,4 +1,7 @@
-#/bin/bash
+#!/bin/bash
+
+printf '#!/bin/bash \n\nzenity --password --title="Password" --timeout=10' > ~/askpass.sh
+chmod +x ~/askpass.sh
 
 zenity --question --ok-label="Best Of Both Worlds Patcher" --cancel-label="Full Patcher" --text="How would you like to patch skyrim?" --width=400
 Patcher=$?
@@ -13,4 +16,4 @@ then
     echo "FullPatcher" > Choice-Linux
 fi
 
-gksu ./Linux-Auto-Compile-Script.sh
+SUDO_ASKPASS="/home/$(logname)/askpass.sh" sudo -A ./Linux-Auto-Compile-Script.sh

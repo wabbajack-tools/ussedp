@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 Choice="$(cat Choice-Linux)"
 
@@ -53,7 +53,7 @@ runuser -u $(logname) -- bash<<_
         echo "script ready"
     fi
 
-    printf "#/bin/bash \ncd ~/ussedp-$Choice/\n./Patcher\n" > ~/ussedp-$Choice.sh
+    printf '#!/bin/bash \ncd ~/ussedp-$Choice/\n./Patcher\n' > ~/ussedp-$Choice.sh
 
     chmod +x ~/ussedp-$Choice.sh
 
