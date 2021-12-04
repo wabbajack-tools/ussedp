@@ -22,7 +22,7 @@ then
     echo "missing dependencies"
     if [ "$(echo $(command -v zenity | grep -oE "zenity"))" = "zenity" ]
     then
-        zenity --question --text="you are missing some dependencies, install them?"
+        zenity --question --text="you are missing some dependencies, install them?" --width=400
         installDep=$?
         if [ $installDep -eq "0" ]
         then
