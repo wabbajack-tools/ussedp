@@ -3,17 +3,88 @@
 printf '#!/bin/bash \n\nzenity --password --title="Password" --timeout=10' > ~/askpass.sh
 chmod +x ~/askpass.sh
 
-zenity --question --ok-label="Best Of Both Worlds Patcher" --cancel-label="Full Patcher" --text="How would you like to patch skyrim?" --width=400
-Patcher=$?
-
-if [ $Patcher -eq "0" ]
+sudoAlt="no"
+if [ "$(echo $(command -v git dotnet wget 7z rsync zenity | grep -oE "git|dotnet|wget|7z|rsync|zenity|sed"))" != "git dotnet wget 7z rsync zenity" ]
 then
-    echo "best of both worlds"
-    echo "BestOfBothWorlds" > Choice-Linux
-elif [ $Patcher -eq "1" ]
-then
-    echo "full patcher"
-    echo "FullPatcher" > Choice-Linux
+    Dep="false"
+else
+    Dep="true"
 fi
 
-SUDO_ASKPASS="/home/$(logname)/askpass.sh" sudo -A ./Linux-Auto-Compile-Script.sh
+if [ "$(SUDO_ASKPASS="/home/$(logname)/askpass.sh" sudo -A echo "sudo granted")" != "sudo granted" ]
+then
+    sudo echo "sudo granted"
+    sudoAlt="yes"
+fi
+
+if [ "$Dep" != "true" ]
+then
+    echo "missing dependencies"
+    if [ "$(echo $(command -v zenity | grep -oE "zenity"))" = "zenity" ]
+    then
+        zenity --question --text="you are missing some dependencies, install them?"
+        installDep=$?
+        if [ $installDep -eq "0" ]
+        then
+            installDep="y"
+        elif [ $installDep -eq "1" ]
+        then
+            installDep="n"
+        fi
+    else
+        echo "you are missing some dependencies, install them?(y/n)"
+        installDep="null"
+        while [ "$installDep" != "n" -a "$installDep" != "y" ]
+        do
+            read installDep
+            if [ "$installDep" != "y" -a "$installDep" != "n" ]
+            then
+                echo "plz type ether y or n"
+            fi
+        done
+    fi
+fi
+
+if [ "$installDep" = "y" ]
+then
+    echo "installing dependencies"
+    packagesNeeded='git dotnet-sdk wget p7zip rsync zenity'
+    if [ -x "$(command -v apk)" ];       then sudo apk add --no-cache $packagesNeeded; Dep="true"
+    elif [ -x "$(command -v apt-get)" ]; then sudo apt-get -y install $packagesNeeded; Dep="true"
+    elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded; Dep="true"
+    elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded; Dep="true"
+    elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded; Dep="true"
+    else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: $packagesNeeded">&2;
+    fi
+elif [ "$installDep" = "n" ]
+then
+    echo "FAILED TO INSTALL PACKAGES: User did not want to install them..."
+fi
+
+if [ "$Dep" = "true" ]
+then
+    zenity --question --ok-label="Best Of Both Worlds Patcher" --cancel-label="Full Patcher" --text="How would you like to patch skyrim?" --width=400
+    Patcher=$?
+fi
+
+if [ "$Dep" = "true" ]
+then
+    if [ "$Patcher" = "0" ]
+    then
+        echo "best of both worlds"
+        echo "BestOfBothWorlds" > Choice-Linux
+    elif [ "$Patcher" = "1" ]
+    then
+        echo "full patcher"
+        echo "FullPatcher" > Choice-Linux
+    fi
+
+    if [ "$sudoAlt" = "yes" ]
+    then
+        sudo ./Linux-Auto-Compile-Script.sh
+    elif [ "$sudoAlt" = "no" ]
+    then
+        SUDO_ASKPASS="/home/$(logname)/askpass.sh" sudo -A ./Linux-Auto-Compile-Script.sh
+    fi
+fi
+exit
