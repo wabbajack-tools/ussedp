@@ -60,7 +60,7 @@ then
         sudo apt-get install -y apt-transport-https
         sudo apt-get update
         sudo apt-get install -y dotnet-sdk-6.0
-    elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded; Dep="true"
+    elif [ -x "$(command -v dnf)" ];     then sudo dnf check-update && sudo dnf install -y $packagesNeeded; Dep="true"
     elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded; Dep="true"
     elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded; Dep="true"
     else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: $packagesNeeded">&2;
