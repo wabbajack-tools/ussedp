@@ -48,10 +48,10 @@ fi
 if [ "$installDep" = "y" ]
 then
     echo "installing dependencies"
-    packagesNeeded='git dotnet-sdk-6.0 wget p7zip rsync zenity'
+    packagesNeeded='git wget p7zip rsync zenity'
     if [ -x "$(command -v apt-get)" ];   then 
         sudo apt-get update
-        sudo apt-get install -y $packagesNeeded
+        sudo apt-get install -y $packagesNeeded 
         Dep="true"
         wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
         sudo dpkg -i packages-microsoft-prod.deb
@@ -60,9 +60,9 @@ then
         sudo apt-get install -y apt-transport-https
         sudo apt-get update
         sudo apt-get install -y dotnet-sdk-6.0
-    elif [ -x "$(command -v dnf)" ];     then sudo dnf check-update && sudo dnf install -y $packagesNeeded; Dep="true"
-    elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded; Dep="true"
-    elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded; Dep="true"
+    elif [ -x "$(command -v dnf)" ];     then sudo dnf check-update && sudo dnf install -y $packagesNeeded dotnet-sdk-5.0; Dep="true"
+    elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded dotnet-sdk-6.0; Dep="true"
+    elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded dotnet-sdk; Dep="true"
     else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: $packagesNeeded">&2;
     fi
 elif [ "$installDep" = "n" ]
