@@ -7,6 +7,9 @@ sudoAlt="no"
 if [ "$(echo $(command -v git dotnet wget 7z rsync zenity | grep -oE "git|dotnet|wget|7z|rsync|zenity|sed"))" != "git dotnet wget 7z rsync zenity" ]
 then
     Dep="false"
+elif [ "$(echo $(dotnet --version | grep -oE 6.0))" != "6.0" ]
+then
+    Dep="false"
 else
     Dep="true"
 fi
@@ -60,9 +63,14 @@ then
         sudo apt-get install -y apt-transport-https
         sudo apt-get update
         sudo apt-get install -y dotnet-sdk-6.0
-    elif [ -x "$(command -v dnf)" ];     then sudo dnf check-update && sudo dnf install -y $packagesNeeded dotnet-sdk-5.0; Dep="true"
+    elif [ -x "$(command -v dnf)" ];     then 
+        sudo dnf check-update 
+        sudo dnf install -y $packagesNeeded
+        Dep="true"
+        wget https://dot.net/v1/dotnet-install.sh
+        ./dotnet-install.sh -c 6.0
     elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded dotnet-sdk-6.0; Dep="true"
-    elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded dotnet-sdk; Dep="true"
+    elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded dotnet-sdk-6.0; Dep="true"
     else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: $packagesNeeded">&2;
     fi
 elif [ "$installDep" = "n" ]
