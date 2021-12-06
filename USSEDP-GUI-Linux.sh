@@ -49,8 +49,17 @@ if [ "$installDep" = "y" ]
 then
     echo "installing dependencies"
     packagesNeeded='git dotnet-sdk-6.0 wget p7zip rsync zenity'
-    if [ -x "$(command -v apk)" ];       then sudo apk add --no-cache $packagesNeeded; Dep="true"
-    elif [ -x "$(command -v apt-get)" ]; then sudo apt-get -y install $packagesNeeded; Dep="true"
+    if [ -x "$(command -v apt-get)" ];   then 
+        sudo apt-get update
+        sudo apt-get install -y $packagesNeeded
+        Dep="true"
+        wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+        sudo dpkg -i packages-microsoft-prod.deb
+        rm packages-microsoft-prod.deb
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https
+        sudo apt-get update
+        sudo apt-get install -y dotnet-sdk-6.0
     elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded; Dep="true"
     elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded; Dep="true"
     elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded; Dep="true"
