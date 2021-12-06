@@ -67,9 +67,9 @@ then
         sudo dnf check-update 
         sudo dnf install -y $packagesNeeded
         Dep="true"
-        rm dotnet-install.sh
         wget --no-check-certificate https://dot.net/v1/dotnet-install.sh
-        ./dotnet-install.sh -c 6.0
+        sudo ./dotnet-install.sh -c 6.0
+        rm dotnet-install.sh
     elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded dotnet-sdk-6.0; Dep="true"
     elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded dotnet-sdk-6.0; Dep="true"
     else echo "FAILED TO INSTALL PACKAGE: Package manager not found. You must manually install: $packagesNeeded">&2;
