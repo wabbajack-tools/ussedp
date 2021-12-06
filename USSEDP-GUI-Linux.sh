@@ -48,7 +48,7 @@ fi
 if [ "$installDep" = "y" ]
 then
     echo "installing dependencies"
-    packagesNeeded='git dotnet-sdk wget p7zip rsync zenity'
+    packagesNeeded='git dotnet-sdk-6.0 wget p7zip rsync zenity'
     if [ -x "$(command -v apk)" ];       then sudo apk add --no-cache $packagesNeeded; Dep="true"
     elif [ -x "$(command -v apt-get)" ]; then sudo apt-get -y install $packagesNeeded; Dep="true"
     elif [ -x "$(command -v dnf)" ];     then sudo dnf install $packagesNeeded; Dep="true"
