@@ -19,7 +19,7 @@ Note: If you are using a `sudo` substitute (like `doas`) you may need to run the
 
 ### **DEPENDENCIES**
 
-Most of it you will already have **(Exept `dotnet-sdk-6.0`)**
+Most of it you will already have **(Exept `dotnet-sdk-5.0`)**
 
 The script will prompt you to install the dependencies now...
 
@@ -27,7 +27,7 @@ The script will prompt you to install the dependencies now...
 
 #1: `git`
 
-#2: `dotnet-sdk-6.0`**(NOT THE SNAP)**
+#2: `dotnet-sdk-5.0`**(NOT THE SNAP)**
 
 #3: `wget`
 
@@ -38,4 +38,4 @@ The script will prompt you to install the dependencies now...
 #6: `zenity`
 
 If you know how to install with your pakage manager in the terminal just do like normal and copy past this...
-`git dotnet-sdk-6.0 wget p7zip rsync zenity`
+`git dotnet-sdk-5.0 wget p7zip rsync zenity`
