@@ -19,7 +19,7 @@ Note: If you are using a `sudo` substitute (like `doas`) you may need to run the
 
 ### **DEPENDENCIES**
 
-Most of it you will already have **(Exept `dotnet-sdk`)**
+Most of it you will already have **(Exept `dotnet-sdk-6.0`)**
 
 The script will prompt you to install the dependencies now...
 
