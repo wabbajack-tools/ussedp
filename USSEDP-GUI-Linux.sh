@@ -69,7 +69,7 @@ then
         Dep="true"
         wget --no-check-certificate https://dot.net/v1/dotnet-install.sh
         sudo chmod +x ./dotnet-install.sh
-        sudo ./dotnet-install.sh -c 6.0
+        ./dotnet-install.sh -c 6.0
         rm dotnet-install.sh
     elif [ -x "$(command -v zypper)" ];  then sudo zypper install -y $packagesNeeded dotnet-sdk-6.0; Dep="true"
     elif [ -x "$(command -v pacman)" ];  then sudo pacman -Sy --noconfirm $packagesNeeded dotnet-sdk-6.0; Dep="true"
