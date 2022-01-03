@@ -93,7 +93,7 @@ then
     if [ "$Patcher" = "0" ]
     then
         echo "best of both worlds"
-        echo "BestOfBothWorlds" > Choice-Linux
+        echo "BestOfBoth" > Choice-Linux
     elif [ "$Patcher" = "1" ]
     then
         echo "full patcher"
