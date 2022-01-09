@@ -85,11 +85,9 @@ namespace Patcher.ViewModels
                 var instructions = JsonSerializer.Deserialize<Instruction[]>(await Extractor.LoadFile("instructions.json"));
                 
 
-                Log($"Patching from {GamePath}");
                 foreach (var file in instructions!.OrderByDescending(d => d.Method))
                 {
                     var fullPath = file.Path.ToRelativePath().RelativeTo(GamePath);
-                    Log($"Processing {fullPath}");
                     switch (file.Method)
                     {
                         case ResultType.Identical:
