@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
@@ -40,6 +41,37 @@ namespace Patcher.Views
 
                 this.BindCommand(ViewModel, vm => vm.StartPatching, view => view.StartButton)
                     .DisposeWith(disposables);
+
+                this.BindCommand(ViewModel, vm => vm.LoginCommand, view => view.LoginButton)
+                    .DisposeWith(disposables);
+                
+                this.BindCommand(ViewModel, vm => vm.LogoutCommand, view => view.LogoutButton)
+                    .DisposeWith(disposables);
+
+                ViewModel.WhenAnyValue(vm => vm.IsLoggedIn)
+                    .Select(l => !l)
+                    .BindTo(this, view => view.SteamUsername.IsEnabled)
+                    .DisposeWith(disposables);
+                
+                ViewModel.WhenAnyValue(vm => vm.IsLoggedIn)
+                    .Select(l => !l)
+                    .BindTo(this, view => view.SteamPassword.IsEnabled)
+                    .DisposeWith(disposables);
+
+                this.Bind(ViewModel, vm => vm.SteamUsername, view => view.SteamUsername.Text)
+                    .DisposeWith(disposables);
+                
+                this.Bind(ViewModel, vm => vm.SteamPassword, view => view.SteamPassword.Text)
+                    .DisposeWith(disposables);
+
+                ViewModel.WhenAnyValue(view => view.GameVersions)
+                    .BindTo(this, view => view.GameOptions.Items)
+                    .DisposeWith(disposables);
+
+                this.WhenAnyValue(view => view.GameOptions.SelectedItem)
+                    .BindTo(ViewModel, vm => vm.SelectedVersion)
+                    .DisposeWith(disposables);
+
             });
             
         }
@@ -64,20 +96,12 @@ namespace Patcher.Views
         {
             Task.Run(async () =>
             {
-                var fod = new OpenFileDialog();
-                fod.Filters = new List<FileDialogFilter>
-                {
-                    new()
-                    {
-                        Name = "SkyrimSE.exe",
-                        Extensions = new[] {"exe"}.ToList()
-                    }
-                };
+                var fod = new OpenFolderDialog();
                 var result = await fod.ShowAsync(this);
                 if (result == null) return;
 
                 Dispatcher.UIThread.Post(() => {
-                    ViewModel!.GamePath = result.First().ToAbsolutePath().Parent;
+                    ViewModel!.GamePath = result.ToAbsolutePath();
                 });
             });
         }

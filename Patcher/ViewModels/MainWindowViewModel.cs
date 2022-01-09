@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -13,15 +14,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using DTOs;
+using GameFinder.StoreHandlers.Origin.DTO;
 using GameFinder.StoreHandlers.Steam;
 using MessageBox.Avalonia;
+using Microsoft.Extensions.Logging;
 using Octodiff.Core;
 using Octodiff.Diagnostics;
+using Patcher.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Ussedp;
+using Wabbajack.Common;
 using Wabbajack.DTOs;
 using Wabbajack.Hashing.xxHash64;
+using Wabbajack.Networking.Http.Interfaces;
+using Wabbajack.Networking.Steam;
 using Wabbajack.Paths;
 using Wabbajack.Paths.IO;
 
@@ -29,6 +36,10 @@ namespace Patcher.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IActivatableViewModel
     {
+        private readonly Client _steamClient;
+        private readonly ILogger<MainWindowViewModel> _logger;
+        private readonly LoggerProvider _loggerProvider;
+        private readonly ITokenProvider<SteamLoginState> _token;
         public ViewModelActivator Activator { get; }
         
         [Reactive]
@@ -39,128 +50,128 @@ namespace Patcher.ViewModels
 
         [Reactive] public string[] LogLines { get; set; } = Array.Empty<string>();
 
+        [Reactive] 
+        public bool IsLoggedIn { get; set; }
+        
+        [Reactive]
+        public string SteamUsername { get; set; }
+        
+        [Reactive]
+        public string SteamPassword { get; set; }
+        
+        
+        [Reactive]
+        public ReactiveCommand<Unit, Task> LoginCommand { get; set; }
+        
+        [Reactive]
+        public ReactiveCommand<Unit,Task> LogoutCommand { get; set; }
+
+        public IEnumerable<GameViewModel> GameVersions => GameViewModel.GameVersions;
+        
+        [Reactive]
+        public GameViewModel? SelectedVersion { get; set; }
+        
+        [Reactive]
+        public bool BestOfBothWorlds { get; set; }
+
 
         public void Log(string line)
         {
             LogLines = LogLines.Append(line).ToArray();
         }
         
-        public MainWindowViewModel()
+        public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Client steamClient, LoggerProvider loggerProvider, 
+            ITokenProvider<SteamLoginState> token)
         {
+            _logger = logger;
+            _token = token;
+            _steamClient = steamClient;
+            _loggerProvider = loggerProvider;
             Activator = new ViewModelActivator();
+
+            _loggerProvider.Messages
+                .Subscribe(l => Log(l.LongMessage));
             
-            var tsk = LocateAndSetGame(Game.SkyrimSpecialEdition);
-            StartPatching = ReactiveCommand.CreateFromTask(() => Start());
+            _logger.LogInformation("Started USSEDP");
+
+            SetSteamStatus().FireAndForget();
+            
+            //var tsk = LocateAndSetGame(Game.SkyrimSpecialEdition);
+            StartPatching = ReactiveCommand.CreateFromTask(() => Start(), 
+                this.WhenAnyValue(vm => vm.GamePath)
+                    .Select(gp => gp != default && gp.DirectoryExists())
+                    .CombineLatest(this.WhenAnyValue(vm => vm.IsLoggedIn),
+                        this.WhenAnyValue(vm => vm.SelectedVersion))
+                    .Select(t => t.First && t.Second && t.Third != null));
+            
+            LoginCommand = ReactiveCommand.Create(async () =>
+            {
+                Login().FireAndForget();
+
+            }, this.WhenAnyValue(vm => vm.IsLoggedIn)
+                    .CombineLatest(this.WhenAnyValue(vm => vm.SteamUsername),
+                        this.WhenAnyValue(vm => vm.SteamPassword))
+                    .Select(t => !t.First && !string.IsNullOrWhiteSpace(t.Second) && !string.IsNullOrWhiteSpace(t.Third)));
+
+            LogoutCommand = ReactiveCommand.Create(async () =>
+            {
+                await Logout();
+            }, this.WhenAnyValue(vm => vm.IsLoggedIn));
+            
+            
         }
 
-        public async Task LocateAndSetGame(Game game)
+
+        private async Task Login()
         {
-            try
+            await _token.SetToken(new SteamLoginState
             {
-                Log($"Looking for {game.MetaData().HumanFriendlyGameName}");
-                var handler = new SteamHandler();
-                handler.FindAllGames();
-
-                var steamGame = handler.Games.First(g => game.MetaData().SteamIDs.Contains(g.ID));
-
-                var path = steamGame.Path.ToAbsolutePath();
-                GamePath = path;
-                Log($"Found at {path}");
-            }
-            catch (Exception ex)
-            {
-                var msg = MessageBoxManager.GetMessageBoxStandardWindow("Error",
-                    $"Couldn't locate {game.MetaData().HumanFriendlyGameName} via Steam, you will have to locate it manually\n using the folder button");
-                await msg.Show();
-            }
+                User = SteamUsername,
+                Password = SteamPassword
+            });
+            await _steamClient.Login();
+            await SetSteamStatus();
         }
 
+        private async Task Logout()
+        {
+            await _token.Delete();
+            await SetSteamStatus();
+        }
+
+
+        private async Task SetSteamStatus()
+        {
+            if (!_token.HaveToken())
+            {
+                IsLoggedIn = false;
+                return;
+            }
+
+            var token = await _token.Get();
+
+            if (string.IsNullOrEmpty(token?.User) || string.IsNullOrEmpty(token?.Password))
+            {
+                IsLoggedIn = false;
+                return;
+            }
+
+            SteamUsername = token!.User;
+
+            if ((token?.SentryFile ?? Array.Empty<byte>()).Length == 0)
+            {
+                IsLoggedIn = false;
+                return;
+            }
+
+            IsLoggedIn = true;
+        }
 
         private async Task Start()
         {
-            await Extractor.InitTable(this);
-            try
-            {
-                Log("Running instructions");
-                var instructions = JsonSerializer.Deserialize<Instruction[]>(await Extractor.LoadFile("instructions.json"));
-                
-
-                foreach (var file in instructions!.OrderByDescending(d => d.Method))
-                {
-                    var fullPath = file.Path.ToRelativePath().RelativeTo(GamePath);
-                    switch (file.Method)
-                    {
-                        case ResultType.Identical:
-                            break;
-                        case ResultType.Deleted:
-                            if (fullPath.FileExists())
-                            {
-                                Log($"Deleting {file.Path}");
-                                fullPath.Delete();
-                            }
-                            else
-                            {
-                                Log($"File already deleted {file.Path}");
-                            }
-
-                            break;
-                        case ResultType.Patched:
-                            await PatchFile(file, GamePath);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-
-                Log("Finished Patching, enjoy your game!");
-            }
-            catch (Exception ex)
-            {
-                Log($"Error! {ex.Message}");
-                Log(ex.ToString());
-            }
+            _logger.LogInformation("Starting Patching");
 
         }
 
-        private async Task PatchFile(Instruction file, AbsolutePath gamePath)
-        {
-            Log($"Patching {file.Path}");
-            var oldData = await file.FromFile.ToRelativePath().RelativeTo(gamePath).ReadAllBytesAsync();
-            var oldHash = await oldData.Hash();
-            if (oldHash != Hash.FromLong(file.SrcHash))
-            {
-                if (oldHash != Hash.FromLong(file.DestHash))
-                {
-                    throw new Exception("Can't patch file, it doesn't match the expected format");
-                }
-                else
-                {
-                    Log($"Already patched {file.Path}");
-                    return;
-                }
-            }
-            Log("Pre-check passed, patching file");
-
-            Log($"Downloading Patch File {file.PatchFile}");
-            var patchFile = await Extractor.LoadFile(file.PatchFile);
-            var ms = new MemoryStream(patchFile);
-
-            var deltaApplier = new DeltaApplier();
-            var os = new MemoryStream();
-            deltaApplier.Apply(new MemoryStream(oldData), new BinaryDeltaReader(ms, new NullProgressReporter()), os);
-
-            Log("Verifying file");
-            os.Position = 0;
-            var finalHash = await os.HashingCopy(Stream.Null, CancellationToken.None);
-
-            if (finalHash != Hash.FromLong(file.DestHash))
-                throw new Exception("Not patching file, result was not valid!");
-            
-            Log("File verifed, writing file");
-
-            await file.Path.ToRelativePath().RelativeTo(GamePath).WriteAllBytesAsync(os.ToArray());
-            
-            Log("File patched");
-        }
     }
 }

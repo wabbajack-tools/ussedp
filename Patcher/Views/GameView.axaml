@@ -1,0 +1,14 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Patcher.Views.GameView">
+    
+    <Grid ColumnDefinitions="120, 120, 125">
+        <TextBlock Grid.Column="0" x:Name="GameName" HorizontalAlignment="Left"></TextBlock>
+        <TextBlock Grid.Column="1" x:Name="Date" HorizontalAlignment="Center"></TextBlock>
+        <TextBlock Grid.Column="2" x:Name="Version" HorizontalAlignment="Right" FontWeight="Bold"></TextBlock>
+    </Grid>
+             
+</UserControl>
