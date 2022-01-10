@@ -9,9 +9,6 @@
         x:Class="Patcher.Views.MainWindow"
         Title="USSEDP - Patcher"
         CanResize="False"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaTitleBarHeightHint="-1"
         Width="800" Height="540">
     
     <Grid RowDefinitions="*, Auto" ColumnDefinitions="*, *">

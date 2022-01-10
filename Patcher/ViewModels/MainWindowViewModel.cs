@@ -313,12 +313,23 @@ namespace Patcher.ViewModels
 
             _logger.LogInformation("Creating installation plan");
 
-            var filesQuery = from file in resolvedRecords[selectedVersion].Archives
-                let state = (GameFileSource) file.State
-                let srcVersion = state.GameFile.Extension == EXE || state.GameFile.Extension == DLL
-                    ? exeVersion
-                    : selectedVersion
-                let srcRecords = resolvedRecords[srcVersion]
+            var oldExtensions = new HashSet<Extension>()
+            {
+                EXE, DLL
+            };
+
+            var exeFiles = resolvedRecords[exeVersion].Archives
+                .Where(f => oldExtensions.Contains(((GameFileSource) f.State).GameFile.Extension))
+                .Select(f => new {Version = exeVersion, File = f});
+            
+            var assetFiles = resolvedRecords[selectedVersion].Archives
+                .Where(f => !oldExtensions.Contains(((GameFileSource) f.State).GameFile.Extension))
+                .Select(f =>  new {Version = selectedVersion, File = f});;
+
+            var filesQuery = from tuple in exeFiles.Concat(assetFiles)
+                let srcRecords = resolvedRecords[tuple.Version]
+                let file = tuple.File
+                let state = (GameFileSource)tuple.File.State
                 from manifest in srcRecords.DepotManifest
                 from manifestFile in manifest.Files
                 where manifestFile.FileName == state.GameFile.ToString()
