@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Patcher.Views.GameView">
     
-    <Grid ColumnDefinitions="120, 120, 125">
+    <Grid ColumnDefinitions="110, 110, 125">
         <TextBlock Grid.Column="0" x:Name="GameName" HorizontalAlignment="Left"></TextBlock>
         <TextBlock Grid.Column="1" x:Name="Date" HorizontalAlignment="Center"></TextBlock>
         <TextBlock Grid.Column="2" x:Name="Version" HorizontalAlignment="Right" FontWeight="Bold"></TextBlock>

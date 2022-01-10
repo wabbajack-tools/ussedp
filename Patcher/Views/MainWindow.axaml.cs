@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -17,6 +18,7 @@ using Patcher.ViewModels;
 using ReactiveUI;
 using Wabbajack.Paths;
 using Wabbajack.Paths.IO;
+using Wabbajack.RateLimiter;
 
 namespace Patcher.Views
 {
@@ -68,13 +70,26 @@ namespace Patcher.Views
                     .BindTo(this, view => view.GameOptions.Items)
                     .DisposeWith(disposables);
 
-                this.WhenAnyValue(view => view.GameOptions.SelectedItem)
-                    .BindTo(ViewModel, vm => vm.SelectedVersion)
+                this.Bind(ViewModel, vm => vm.SelectedVersion, view => view.GameOptions.SelectedItem)
+                    .DisposeWith(disposables);
+
+                ViewModel.WhenAnyValue(vm => vm.TotalProgress)
+                    .Select(v => v.Value)
+                    .BindTo(this, view => view.TotalProgress.Value)
+                    .DisposeWith(disposables);
+
+                ViewModel.WhenAnyValue(vm => vm.JobProgress)
+                    .Select(v => v.Value)
+                    .BindTo(this, view => view.JobProgress.Value)
+                    .DisposeWith(disposables);
+
+                this.Bind(ViewModel, vm => vm.BestOfBothWorlds, view => view.BestOfBothWorlds.IsChecked)
                     .DisposeWith(disposables);
 
             });
             
         }
+
 
 
         private void OpenPatreon(object? sender, RoutedEventArgs e)

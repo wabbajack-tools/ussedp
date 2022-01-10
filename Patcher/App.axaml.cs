@@ -19,6 +19,7 @@ using Wabbajack.DTOs.JsonConverters;
 using Wabbajack.Networking.Http.Interfaces;
 using Wabbajack.Networking.NexusApi;
 using Wabbajack.Networking.Steam;
+using Wabbajack.RateLimiter;
 using Wabbajack.Services.OSIntegrated;
 using Wabbajack.Services.OSIntegrated.TokenProviders;
 
@@ -52,6 +53,8 @@ namespace Patcher
                     service.AddAllSingleton<IUserInterventionHandler, UserInterventionHandler>();
                     service.AddDTOSerializer();
                     service.AddDTOConverters();
+
+                    service.AddSingleton<IResource<HttpClient>>(x => new Resource<HttpClient>("Web Requests", 16));
 
                 }).Build();
             Services = host.Services;
