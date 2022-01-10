@@ -203,6 +203,7 @@ namespace Patcher.ViewModels
                 var postfix = string.Join("_", version.Version.Split(".").Take(3));
                 if (gp.Combine("skse64_" + postfix + ".dll").FileExists())
                 {
+                    _logger.LogInformation("SKSE for {Version} found in install folder", version.Version);
                     SelectedVersion = version;
                     break;
                 }
@@ -363,22 +364,17 @@ namespace Patcher.ViewModels
 
                 if (output.FileExists())
                 {
-                    _logger.LogInformation("File already exists, verifying");
                     if (output.Size() == file.Archive.Size)
                     {
-                        _logger.LogInformation("Size matches, hashing the file to make sure");
                         var hash = await output.Hash();
                         if (hash == file.Archive.Hash)
                         {
                             _logger.LogInformation("File is unmodified, skipping");
-                            
                             await _totalJob.Report((int)(file.FileData.TotalSize >> 8), CancellationToken.None);
                             continue;
                         }
                         
                     }
-                    
-                    _logger.LogInformation("File has been modified, deleting and will download");
                     output.Delete();
                 }
                 

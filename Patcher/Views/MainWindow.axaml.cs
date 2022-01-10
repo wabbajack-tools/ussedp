@@ -38,7 +38,11 @@ namespace Patcher.Views
                     .DisposeWith(disposables);
 
                 this.OneWayBind(ViewModel, vm => vm.LogLines, view => view.Log.Text,
-                        p => string.Join("\n", p.Reverse()))
+                        p => string.Join("\n", p))
+                    .DisposeWith(disposables);
+
+                ViewModel.WhenAnyValue(vm => vm.LogLines)
+                    .Subscribe(v => Log.CaretIndex = int.MaxValue)
                     .DisposeWith(disposables);
 
                 this.BindCommand(ViewModel, vm => vm.StartPatching, view => view.StartButton)

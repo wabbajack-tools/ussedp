@@ -19,11 +19,11 @@
             
             <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Margin="0, 4" FontWeight="Bold" FontSize="20">Steam Login:</TextBlock>
             <Label Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="14" VerticalAlignment="Center">Username:</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="SteamUsername" VerticalContentAlignment="Center" PasswordChar="*"></TextBox>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="SteamUsername" VerticalContentAlignment="Center" PasswordChar="*" FontSize="20"></TextBox>
 
             
             <Label Grid.Row="2" Grid.Column="0"  FontWeight="Bold" FontSize="14" VerticalAlignment="Center">Password:</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="SteamPassword" VerticalContentAlignment="Center" PasswordChar="*" FontWeight="Bold" FontSize="20"></TextBox>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="SteamPassword" VerticalContentAlignment="Center" PasswordChar="*" FontSize="20"></TextBox>
             
             <Button Grid.Row="1" Grid.Column="2" x:Name="LoginButton" Margin="4" HorizontalAlignment="Stretch">
                 <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center">Login</TextBlock>

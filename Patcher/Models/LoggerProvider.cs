@@ -1,9 +1,3 @@
-using Wabbajack.Paths;
-using Wabbajack.Paths.IO;
-using Wabbajack.Services.OSIntegrated;
-
-namespace Patcher.Models;
-
 using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -15,11 +9,19 @@ using System.Text;
 using System.Threading;
 using DynamicData;
 using Microsoft.Extensions.Logging;
+using Wabbajack.Paths;
+using Wabbajack.Paths.IO;
+using Wabbajack.Services.OSIntegrated;
+
+namespace Patcher.Models;
 
 public class LoggerProvider : ILoggerProvider
 {
     private readonly RelativePath _appName;
+    private readonly Configuration _configuration;
     private readonly CompositeDisposable _disposables;
+    private readonly Stream _logFile;
+    private readonly StreamWriter _logStream;
 
     public readonly ReadOnlyObservableCollection<ILogMessage> _messagesFiltered;
     private readonly DateTime _startupTime;
@@ -28,14 +30,20 @@ public class LoggerProvider : ILoggerProvider
     private readonly SourceCache<ILogMessage, long> _messageLog = new(m => m.MessageId);
     private readonly Subject<ILogMessage> _messages = new();
 
-    public LoggerProvider()
+    public LoggerProvider(Configuration configuration)
     {
         _startupTime = DateTime.UtcNow;
+        _configuration = configuration;
+        _configuration.LogLocation.CreateDirectory();
+
         _disposables = new CompositeDisposable();
 
         Messages.Subscribe(m => _messageLog.AddOrUpdate(m))
             .DisposeWith(_disposables);
-        
+
+        Messages.Subscribe(m => LogToFile(m))
+            .DisposeWith(_disposables);
+
         _messageLog.Connect()
             .Bind(out _messagesFiltered)
             .Subscribe()
@@ -44,9 +52,15 @@ public class LoggerProvider : ILoggerProvider
         _messages.DisposeWith(_disposables);
 
         _appName = typeof(LoggerProvider).Assembly.Location.ToAbsolutePath().FileName;
+        LogPath = _configuration.LogLocation.Combine($"{_appName}.current.log");
+        _logFile = LogPath.Open(FileMode.Append, FileAccess.Write);
+        _logFile.DisposeWith(_disposables);
+
+        _logStream = new StreamWriter(_logFile, Encoding.UTF8);
     }
 
     public IObservable<ILogMessage> Messages => _messages;
+    public AbsolutePath LogPath { get; }
     public ReadOnlyObservableCollection<ILogMessage> MessageLog => _messagesFiltered;
 
     public void Dispose()
@@ -57,6 +71,16 @@ public class LoggerProvider : ILoggerProvider
     public ILogger CreateLogger(string categoryName)
     {
         return new Logger(this, categoryName);
+    }
+
+    private void LogToFile(ILogMessage logMessage)
+    {
+        var line = $"[{logMessage.TimeStamp - _startupTime}] {logMessage.LongMessage}";
+        lock (_logStream)
+        {
+            _logStream.Write(line);
+            _logStream.Flush();
+        }
     }
 
     private long NextMessageId()
