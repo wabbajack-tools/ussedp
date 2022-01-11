@@ -382,6 +382,9 @@ namespace Patcher.ViewModels
             _totalJob = null;
             
             _wjClient.SendMetric("ended_ussedp", $"{exeVersion}_{selectedVersion}").FireAndForget();
+            _logger.LogInformation("Worked completed, logging you out of Steam");
+            await _token.Delete();
+            await SetSteamStatus();
             _logger.LogInformation("Finished download, enjoy your game!");
 
         }
