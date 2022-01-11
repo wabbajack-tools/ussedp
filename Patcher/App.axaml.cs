@@ -16,6 +16,7 @@ using Patcher.Models;
 using Wabbajack.DTOs;
 using Wabbajack.DTOs.Interventions;
 using Wabbajack.DTOs.JsonConverters;
+using Wabbajack.DTOs.Logins;
 using Wabbajack.Networking.Http.Interfaces;
 using Wabbajack.Networking.NexusApi;
 using Wabbajack.Networking.Steam;
@@ -23,6 +24,9 @@ using Wabbajack.Paths.IO;
 using Wabbajack.RateLimiter;
 using Wabbajack.Services.OSIntegrated;
 using Wabbajack.Services.OSIntegrated.TokenProviders;
+using Wabbajack.Networking.WabbajackClientApi;
+using Wabbajack.VFS;
+using ServiceExtensions = Wabbajack.Networking.WabbajackClientApi.ServiceExtensions;
 
 namespace Patcher
 {
@@ -47,6 +51,9 @@ namespace Patcher
                     service
                         .AddAllSingleton<ITokenProvider<SteamLoginState>, EncryptedJsonTokenProvider<SteamLoginState>,
                             SteamTokenProvider>();
+                    service
+                        .AddAllSingleton<ITokenProvider<WabbajackApiState>,
+                            WabbajackApiTokenProvider>();
 
                     service.AddSingleton<MainWindowViewModel>();
                     
@@ -54,13 +61,15 @@ namespace Patcher
                     service.AddAllSingleton<IUserInterventionHandler, UserInterventionHandler>();
                     service.AddDTOSerializer();
                     service.AddDTOConverters();
+                    service.AddWabbajackClient();
 
-                    service.AddSingleton<Configuration>(c => new Configuration()
+                    service.AddSingleton(c => new Wabbajack.Services.OSIntegrated.Configuration()
                     {
                         LogLocation = KnownFolders.EntryPoint.Combine("logs")
                     });
 
                     service.AddSingleton<IResource<HttpClient>>(x => new Resource<HttpClient>("Web Requests", 16));
+                    service.AddSingleton<IResource<FileHashCache>>(x => new Resource<FileHashCache>("File Hash", 16));
 
                 }).Build();
             Services = host.Services;

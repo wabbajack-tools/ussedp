@@ -27,6 +27,7 @@
     <PackageReference Include="ReactiveUI.Fody" Version="17.1.17" />
     <PackageReference Include="Wabbajack.DTOs" Version="3.0.0-beta4" />
     <PackageReference Include="Wabbajack.Networking.Steam" Version="3.0.0-beta4" />
+    <PackageReference Include="Wabbajack.Networking.WabbajackClientApi" Version="3.0.0-beta4" />
     <PackageReference Include="Wabbajack.Paths" Version="3.0.0-beta4" />
     <PackageReference Include="Wabbajack.Paths.IO" Version="3.0.0-beta4" />
     <PackageReference Include="Wabbajack.Services.OSIntegrated" Version="3.0.0-beta4" />

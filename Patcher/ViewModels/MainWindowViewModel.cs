@@ -86,7 +86,8 @@ namespace Patcher.ViewModels
 
         private IJob? _currentJob;
         private IJob? _totalJob;
-        
+        private readonly Wabbajack.Networking.WabbajackClientApi.Client _wjClient;
+
         [Reactive]
         public Percent JobProgress { get; set; }
         
@@ -106,13 +107,14 @@ namespace Patcher.ViewModels
         }
         
         public MainWindowViewModel(ILogger<MainWindowViewModel> logger, Client steamClient, LoggerProvider loggerProvider, 
-            ITokenProvider<SteamLoginState> token, DTOSerializer dtos)
+            ITokenProvider<SteamLoginState> token, DTOSerializer dtos, Wabbajack.Networking.WabbajackClientApi.Client wjClient)
         {
             _logger = logger;
             _token = token;
             _steamClient = steamClient;
             _loggerProvider = loggerProvider;
             _dtos = dtos;
+            _wjClient = wjClient;
             Activator = new ViewModelActivator();
 
             _loggerProvider.Messages
@@ -267,6 +269,9 @@ namespace Patcher.ViewModels
 
             var selectedVersion = BestOfBothWorlds ? GameViewModel.GameVersions.Last().Version : SelectedVersion!.Version;
             var exeVersion = SelectedVersion!.Version;
+
+
+            _wjClient.SendMetric("started_ussedp", $"{exeVersion}_{selectedVersion}").FireAndForget();
             
             var versions = new (uint AppId, string Version)[]
             {
@@ -391,6 +396,9 @@ namespace Patcher.ViewModels
             }
 
             _totalJob = null;
+            
+            _wjClient.SendMetric("ended_ussedp", $"{exeVersion}_{selectedVersion}").FireAndForget();
+            _logger.LogInformation("Finished download, enjoy your game!");
 
         }
         
