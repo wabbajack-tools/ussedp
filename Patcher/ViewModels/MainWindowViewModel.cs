@@ -219,7 +219,10 @@ namespace Patcher.ViewModels
         {
             if (!_token.HaveToken())
             {
-                IsLoggedIn = false;
+                RxApp.MainThreadScheduler.Schedule(false, (_, _) =>
+                {
+                    IsLoggedIn = false;
+                });
                 return;
             }
 
@@ -227,7 +230,10 @@ namespace Patcher.ViewModels
 
             if (string.IsNullOrEmpty(token?.User) || string.IsNullOrEmpty(token?.Password))
             {
-                IsLoggedIn = false;
+                RxApp.MainThreadScheduler.Schedule(false, (_, _) =>
+                {
+                    IsLoggedIn = false;
+                });
                 return;
             }
 
@@ -235,11 +241,17 @@ namespace Patcher.ViewModels
 
             if ((token?.SentryFile ?? Array.Empty<byte>()).Length == 0)
             {
-                IsLoggedIn = false;
+                RxApp.MainThreadScheduler.Schedule(false, (_, _) =>
+                {
+                    IsLoggedIn = false;
+                });
                 return;
             }
 
-            IsLoggedIn = true;
+            RxApp.MainThreadScheduler.Schedule(true, (_, _) =>
+            {
+                IsLoggedIn = true;
+            });
         }
 
         private async Task Start()
