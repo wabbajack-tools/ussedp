@@ -1,0 +1,82 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Patcher.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:views="clr-namespace:Patcher.Views"
+        Icon="/Assets/avalonia_icon.ico"
+        mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="320"
+        x:Class="Patcher.Views.MainWindow"
+        Title="Unofficial Skyrim Downloader"
+        CanResize="False"
+        Width="800" Height="540">
+    
+    <Grid RowDefinitions="*, Auto" ColumnDefinitions="*, *">
+
+        <Grid Grid.Row="0" Grid.Column="0" RowDefinitions="Auto, Auto, Auto Auto, Auto, Auto, *, Auto" 
+              Margin="4" 
+              ColumnDefinitions="Auto, *, Auto">
+            
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Margin="0, 4" FontWeight="Bold" FontSize="20">Steam Login:</TextBlock>
+            <Label Grid.Row="1" Grid.Column="0" FontWeight="Bold" FontSize="14" VerticalAlignment="Center">Username:</Label>
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="SteamUsername" VerticalContentAlignment="Center" PasswordChar="*" FontSize="20"></TextBox>
+
+            
+            <Label Grid.Row="2" Grid.Column="0"  FontWeight="Bold" FontSize="14" VerticalAlignment="Center">Password:</Label>
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="SteamPassword" VerticalContentAlignment="Center" PasswordChar="*" FontSize="20"></TextBox>
+            
+            <Button Grid.Row="1" Grid.Column="2" x:Name="LoginButton" Margin="4" HorizontalAlignment="Stretch">
+                <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center">Login</TextBlock>
+            </Button>
+            
+            <Button Grid.Row="2" Grid.Column="2" x:Name="LogoutButton" FontWeight="Bold" FontSize="20" Margin="4" HorizontalAlignment="Stretch">
+                <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Stretch">Logout</TextBlock>
+            </Button>
+
+
+            
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="3" Margin="0, 4" FontWeight="Bold" FontSize="20">Game Install Location:</TextBlock>
+            
+            <Button Grid.Row="4" Grid.Column="0" Margin="4" HorizontalAlignment="Stretch" Click="FindGameFile" Background="DarkGreen">
+                <i:MaterialIcon Kind="Folder"></i:MaterialIcon>
+            </Button>
+            
+            <TextBox x:Name="GameLocation" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="1" IsEnabled="False" Margin="0, 4"></TextBox>
+            
+            
+            <TextBlock Grid.Row="5" Grid.ColumnSpan="3" FontWeight="Bold" FontSize="20">Game Version to Install:</TextBlock>
+            <ListBox Grid.Row="6" Grid.ColumnSpan="3" x:Name="GameOptions" Margin="4">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"></StackPanel>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <views:GameView></views:GameView>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <CheckBox x:Name="BestOfBothWorlds" Grid.Row="7" Grid.ColumnSpan="3">"Best of Both Worlds" - use new content with old EXE</CheckBox>
+            
+
+        </Grid>
+        
+        <Grid Grid.Row="0" Grid.Column="1" RowDefinitions="Auto, *, Auto, Auto">
+            <TextBlock Grid.Row="0" Margin="0, 4" FontWeight="Bold" FontSize="20">Log:</TextBlock>
+            <TextBox Grid.Row="1" Grid.ColumnSpan="3" Margin="0,4" x:Name="Log"></TextBox>
+            <ProgressBar x:Name="TotalProgress" Grid.Row="2" Minimum="0" Maximum="1" Height="20" Margin="4"></ProgressBar>
+            <ProgressBar x:Name="JobProgress" Grid.Row="3" Minimum="0" Maximum="1" Height="20" Margin="4"></ProgressBar>
+        </Grid>
+        
+        <Button Grid.Row="1" Grid.Column="0" x:Name="StartButton" Margin="4" Background="DarkGreen" HorizontalAlignment="Stretch" >
+            <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center">Start Downloading</TextBlock>
+        </Button>
+        
+        <Button Grid.Row="1" Grid.Column="1" Click="OpenPatreon" HorizontalAlignment="Stretch" Margin="4">
+            <TextBlock FontWeight="Bold" FontSize="20" HorizontalAlignment="Center">Support By Donating on the Nexus</TextBlock>
+        </Button>
+    </Grid>
+
+</Window>
