@@ -39,25 +39,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="GameDefinitions\1.5.97.0.json" />
     <EmbeddedResource Include="GameDefinitions\1.5.97.0.json" />
-    <None Remove="GameDefinitions\1.5.97.0_steam_manifests.json" />
     <EmbeddedResource Include="GameDefinitions\1.5.97.0_steam_manifests.json" />
-    <None Remove="GameDefinitions\1.6.318.0.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.318.0.json" />
-    <None Remove="GameDefinitions\1.6.318.0_steam_mainifests.json" />
-    <EmbeddedResource Include="GameDefinitions\1.6.318.0_steam_mainifests.json" />
-    <None Remove="GameDefinitions\1.6.323.0.json" />
+    <EmbeddedResource Include="GameDefinitions\1.6.318.0_steam_manifests.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.323.0.json" />
-    <None Remove="GameDefinitions\1.6.323.0_steam_manifests.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.323.0_steam_manifests.json" />
-    <None Remove="GameDefinitions\1.6.342.0.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.342.0.json" />
-    <None Remove="GameDefinitions\1.6.342.0_steam_manifests.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.342.0_steam_manifests.json" />
-    <None Remove="GameDefinitions\1.6.353.0.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.353.0.json" />
-    <None Remove="GameDefinitions\1.6.353.0_steam_manifests.json" />
     <EmbeddedResource Include="GameDefinitions\1.6.353.0_steam_manifests.json" />
   </ItemGroup>
 </Project>

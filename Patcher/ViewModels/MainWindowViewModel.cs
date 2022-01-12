@@ -105,7 +105,7 @@ namespace Patcher.ViewModels
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(l => Log(l.LongMessage));
             
-            _logger.LogInformation("Started USSEDP");
+            _logger.LogInformation("Started Downloader");
 
             SetSteamStatus().FireAndForget();
 

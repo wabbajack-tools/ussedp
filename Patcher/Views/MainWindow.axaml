@@ -8,7 +8,7 @@
         Icon="/Assets/avalonia_icon.ico"
         mc:Ignorable="d" d:DesignWidth="540" d:DesignHeight="320"
         x:Class="Patcher.Views.MainWindow"
-        Title="USSEDP - Patcher"
+        Title="Unofficial Skyrim Downloader"
         CanResize="False"
         Width="800" Height="540">
     
