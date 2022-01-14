@@ -7,4 +7,18 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="F23.StringSimilarity" Version="4.1.0" />
+      <PackageReference Include="Octodiff" Version="1.2.36" />
+      <PackageReference Include="Wabbajack.Common" Version="3.0.0-beta6" />
+      <PackageReference Include="Wabbajack.Hashing.xxHash64" Version="3.0.0-beta6" />
+      <PackageReference Include="Wabbajack.Paths" Version="3.0.0-beta6" />
+      <PackageReference Include="Wabbajack.Paths.IO" Version="3.0.0-beta6" />
+      <PackageReference Include="Wabbajack.VFS" Version="3.0.0-beta6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DTOs\DTOs.csproj" />
+    </ItemGroup>
+
 </Project>
