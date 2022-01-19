@@ -9,12 +9,15 @@
 
     <ItemGroup>
       <PackageReference Include="F23.StringSimilarity" Version="4.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
       <PackageReference Include="Octodiff" Version="1.2.36" />
-      <PackageReference Include="Wabbajack.Common" Version="3.0.0-beta6" />
-      <PackageReference Include="Wabbajack.Hashing.xxHash64" Version="3.0.0-beta6" />
-      <PackageReference Include="Wabbajack.Paths" Version="3.0.0-beta6" />
-      <PackageReference Include="Wabbajack.Paths.IO" Version="3.0.0-beta6" />
-      <PackageReference Include="Wabbajack.VFS" Version="3.0.0-beta6" />
+      <PackageReference Include="Wabbajack.Common" Version="3.0.0-beta7" />
+      <PackageReference Include="Wabbajack.Hashing.xxHash64" Version="3.0.0-beta7" />
+      <PackageReference Include="Wabbajack.Networking.NexusApi" Version="3.0.0-beta7" />
+      <PackageReference Include="Wabbajack.Paths" Version="3.0.0-beta7" />
+      <PackageReference Include="Wabbajack.Paths.IO" Version="3.0.0-beta7" />
+      <PackageReference Include="Wabbajack.Services.OSIntegrated" Version="3.0.0-beta7" />
+      <PackageReference Include="Wabbajack.VFS" Version="3.0.0-beta7" />
     </ItemGroup>
 
     <ItemGroup>

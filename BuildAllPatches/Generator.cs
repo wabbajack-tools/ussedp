@@ -51,6 +51,7 @@ public class Generator
                         Path = toFile.Key.ToString(),
                         SrcHash = (long) await fromHash,
                         DestHash = (long) await toHash,
+                        PatchFile = $"{(await fromHash).ToHex()}_{(await toHash).ToHex()}",
                         Method = ResultType.Patched
                     };
                 }
@@ -69,6 +70,7 @@ public class Generator
                 SrcHash = (long) await fromHash2,
                 Path = toFile.Key.ToString(),
                 DestHash = (long) await toHash2,
+                PatchFile = $"{(await fromHash2).ToHex()}_{(await toHash2).ToHex()}",
                 Method = ResultType.Patched
             };
         }

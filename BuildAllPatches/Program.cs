@@ -4,17 +4,34 @@ using System.Text;
 using System.Text.Json;
 using BuildAllPatches;
 using DTOs;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Wabbajack.Common;
+using Wabbajack.DTOs;
 using Wabbajack.Hashing.xxHash64;
+using Wabbajack.Networking.NexusApi;
+using Wabbajack.Networking.NexusApi.DTOs;
 using Wabbajack.Paths;
 using Wabbajack.Paths.IO;
 using Wabbajack.RateLimiter;
+using Wabbajack.Services.OSIntegrated;
 using Wabbajack.VFS;
 
+var ModId = 57618;
 
 var workingFolder = args[0].ToAbsolutePath();
+var host = Host.CreateDefaultBuilder()
+    .ConfigureServices(s =>
+    {
+        s.AddOSIntegrated();
+    });
+
+var built = host.Build();
+var nexusClient = built.Services.GetRequiredService<NexusApi>();
+
 var limiter = new Resource<FileHashCache>("File Hashing", 10);
 var hashCache = new FileHashCache(workingFolder.Combine("hash_cache.sqlite"), limiter);
+
 
 var srcVersions = workingFolder.Combine("src_versions");
 
@@ -27,20 +44,25 @@ Console.WriteLine($"Found {versions.Count} versions");
 
 
 var ordered = versions.OrderByDescending(f => f.Key).ToArray();
-var topVersion = ordered.First();
 
-Console.WriteLine($"Most recent version is {topVersion.Key}");
+Console.WriteLine($"Most recent version is {ordered.First().Key}");
 
-var pairs = ordered.Skip(1)
-    .Select(f => new Build
-    {
-        BestOfBothWorlds = false,
-        FromVersion = topVersion.Key,
-        FromPath = topVersion.Value,
-        ToVersion = f.Key,
-        ToPath = f.Value
-    }).ToList();
-    
+var pairs = new List<Build>();
+
+for (var skip = 0; skip < ordered.Length - 1; skip++)
+{
+    var topVersion = ordered.Skip(skip).First();
+    pairs.AddRange(ordered.Skip(skip + 1)
+        .Select(f => new Build
+        {
+            BestOfBothWorlds = false,
+            FromVersion = topVersion.Key,
+            FromPath = topVersion.Value,
+            ToVersion = f.Key,
+            ToPath = f.Value
+        }));
+}
+
 Console.WriteLine($"Found {pairs.Count} downgrade groups to process");
 
 var builds = new List<(Build Build, Instruction[] Instructions)>();
@@ -162,6 +184,12 @@ var outputFolder = workingFolder.Combine("uploads");
 
 foreach (var build in builds)
 {
+    var name = outputFolder.Combine(build.Build.Postfix + "_" + build.Build.FromVersion + "-" + build.Build.ToVersion +
+                                    ".exe");
+    
+    if (name.FileExists())
+        continue;
+
     var offsets = new Dictionary<string, Entry>();
     
     var patchNames = build.Instructions
@@ -169,8 +197,7 @@ foreach (var build in builds)
         .Select(p => Hash.FromLong(p.SrcHash).ToHex() + "_" + Hash.FromLong(p.DestHash).ToHex())
         .Distinct();
 
-    var name = outputFolder.Combine(build.Build.Postfix + "_" + build.Build.FromVersion + "-" + build.Build.ToVersion +
-                                    ".exe");
+
 
     Console.WriteLine($"Writing {name.FileName}");
     await using var outStream = name.Open(FileMode.Create, FileAccess.Write, FileShare.Read);
@@ -180,6 +207,7 @@ foreach (var build in builds)
 
     var jsonBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(build.Instructions));
     offsets["instructions.json"] = new Entry {Offset = outStream.Position, Size = jsonBytes.Length};
+    await outStream.WriteAsync(jsonBytes);
     
     foreach (var patch in patchNames)
     {
@@ -234,4 +262,32 @@ foreach (var build in builds)
     signProcDisposable.Dispose();
     
     Console.WriteLine("\n");
+}
+
+
+var (response, info) = await nexusClient.ModFiles(Game.SkyrimSpecialEdition.MetaData().NexusName!, ModId);
+
+foreach (var build in builds)
+{
+    var name = outputFolder.Combine(build.Build.Postfix + "_" + build.Build.FromVersion + "-" + build.Build.ToVersion +
+                                    ".exe");
+    if (response.Files.Any(f => f.Name == name.FileName.ToString() && f.SizeInBytes == name.Size() && f.CategoryName != "ARCHIVED"))
+        continue;
+
+    var filesDesc = build.Build.BestOfBothWorlds ? "only game code" : "all files";
+
+    var definition = new UploadDefinition
+    {
+        Name = name.FileName.ToString(),
+        Version = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+        Category = "Archives",
+        BriefOverview = $"Downgrades {filesDesc} from {build.Build.FromVersion} to {build.Build.ToVersion}",
+        Game = Game.SkyrimSpecialEdition,
+        ModId = ModId,
+        Path = name,
+        NewExisting = false,
+        RemoveOldVersion = false
+    };
+
+    await nexusClient.UploadFile(definition);
 }
