@@ -45,7 +45,10 @@ Console.WriteLine($"Found {versions.Count} versions");
 
 var ordered = versions.OrderByDescending(f => f.Key).ToArray();
 
-Console.WriteLine($"Most recent version is {ordered.First().Key}");
+var newestVersion = ordered.First().Key;
+var oldestVersion = ordered.Last().Key;
+
+Console.WriteLine($"Most recent version is {oldestVersion}");
 
 var pairs = new List<Build>();
 
@@ -72,7 +75,10 @@ foreach (var pair in pairs)
     var fromFiles = pair.FromPath.EnumerateFiles().ToDictionary(f => f.RelativeTo(pair.FromPath), f => f);
     var toFiles = pair.ToPath.EnumerateFiles().ToDictionary(f => f.RelativeTo(pair.ToPath), f => f);
     
-    var plan = await Generator.GeneratePlan(pair.FromVersion, pair.ToVersion, fromFiles, toFiles, hashCache).ToArray();
+    var plan = (await Generator.GeneratePlan(pair.FromVersion, pair.ToVersion, fromFiles, toFiles, hashCache).ToArray())
+        // Don't patch a file until we've patched all files that require it
+        .OrderBy(x => x.FromFile == x.Path ? 1 : 0)
+        .ToArray();
     Console.WriteLine($"Found {plan.Length} instructions");
     builds.Add((pair, plan));
 }
@@ -102,7 +108,10 @@ foreach (var pair in pairs)
             toFiles[key] = value;
     }
     
-    var plan = await Generator.GeneratePlan(pair.FromVersion, pair.ToVersion, fromFiles, toFiles, hashCache).ToArray();
+    var plan = (await Generator.GeneratePlan(pair.FromVersion, pair.ToVersion, fromFiles, toFiles, hashCache).ToArray())
+        // Don't patch a file until we've patched all files that require it
+        .OrderBy(x => x.FromFile == x.Path ? 1 : 0)
+        .ToArray();
     Console.WriteLine($"Found {plan.Length} instructions");
     var newBuild = new Build()
     {
@@ -205,7 +214,12 @@ foreach (var build in builds)
     await outStream.WriteAsync(exeData);
 
 
-    var jsonBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(build.Instructions));
+    
+    var jsonBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new BuildRecord
+    {
+        Instructions = build.Instructions,
+        Name = $"{build.Build.Postfix}_{build.Build.FromVersion}_{build.Build.ToVersion}_{build.Build.Date}"
+    }));
     offsets["instructions.json"] = new Entry {Offset = outStream.Position, Size = jsonBytes.Length};
     await outStream.WriteAsync(jsonBytes);
     
@@ -271,6 +285,18 @@ foreach (var build in builds)
 {
     var name = outputFolder.Combine(build.Build.Postfix + "_" + build.Build.FromVersion + "-" + build.Build.ToVersion +
                                     ".exe");
+
+    string section = "Old";
+    if (build.Build.FromVersion == newestVersion && build.Build.ToVersion == oldestVersion)
+    {
+        if (build.Build.BestOfBothWorlds)
+        {
+            section = "Optional";
+        }
+        section = "Main";
+    }
+    
+    
     if (response.Files.Any(f => f.Name == name.FileName.ToString() && f.SizeInBytes == name.Size() && f.CategoryName != "ARCHIVED"))
         continue;
 
@@ -280,7 +306,7 @@ foreach (var build in builds)
     {
         Name = name.FileName.ToString(),
         Version = DateTime.UtcNow.ToString("yyyy-MM-dd"),
-        Category = "Archives",
+        Category = section,
         BriefOverview = $"Downgrades {filesDesc} from {build.Build.FromVersion} to {build.Build.ToVersion}",
         Game = Game.SkyrimSpecialEdition,
         ModId = ModId,

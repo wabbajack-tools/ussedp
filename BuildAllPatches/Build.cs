@@ -10,5 +10,6 @@ public class Build
     public AbsolutePath ToPath { get; init; }
     public bool BestOfBothWorlds { get; init; }
 
-    public string Postfix => BestOfBothWorlds ? "bestofboth" : "full";
+    public string Postfix => BestOfBothWorlds ? "BestOfBoth" : "FullPatcher";
+    public string Date { get; set; } = DateTime.UtcNow.ToString("yyyy-MM-dd");
 }

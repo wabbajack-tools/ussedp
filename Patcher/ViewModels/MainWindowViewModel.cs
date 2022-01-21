@@ -82,10 +82,12 @@ namespace Patcher.ViewModels
             try
             {
                 Log("Running instructions");
-                var instructions = JsonSerializer.Deserialize<Instruction[]>(await Extractor.LoadFile("instructions.json"));
+                var buildRecord = JsonSerializer.Deserialize<BuildRecord>(await Extractor.LoadFile("instructions.json"))!;
+                Log($"Loaded instructions {buildRecord.Name}");
+                var instructions = buildRecord.Instructions;
                 
 
-                foreach (var file in instructions!.OrderByDescending(d => d.Method))
+                foreach (var file in instructions)
                 {
                     var fullPath = file.Path.ToRelativePath().RelativeTo(GamePath);
                     switch (file.Method)
@@ -141,7 +143,7 @@ namespace Patcher.ViewModels
             }
             Log("Pre-check passed, patching file");
 
-            Log($"Downloading Patch File {file.PatchFile}");
+            Log($"Reading Patch File {file.PatchFile}");
             var patchFile = await Extractor.LoadFile(file.PatchFile);
             var ms = new MemoryStream(patchFile);
 
@@ -156,7 +158,7 @@ namespace Patcher.ViewModels
             if (finalHash != Hash.FromLong(file.DestHash))
                 throw new Exception("Not patching file, result was not valid!");
             
-            Log("File verifed, writing file");
+            Log("File verified, writing file");
 
             await file.Path.ToRelativePath().RelativeTo(GamePath).WriteAllBytesAsync(os.ToArray());
             

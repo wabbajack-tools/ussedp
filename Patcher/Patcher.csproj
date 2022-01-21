@@ -18,6 +18,7 @@
     <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="1.7.2" />
     <PackageReference Include="Material.Icons.Avalonia" Version="1.0.2" />
     <PackageReference Include="MessageBox.Avalonia" Version="1.5.5" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
     <PackageReference Include="Octodiff" Version="1.2.36" />
     <PackageReference Include="ReactiveUI.Fody" Version="16.3.10" />
     <PackageReference Include="Wabbajack.DTOs" Version="3.0.0-beta1" />

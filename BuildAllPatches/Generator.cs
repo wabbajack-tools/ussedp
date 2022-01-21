@@ -54,6 +54,7 @@ public class Generator
                         PatchFile = $"{(await fromHash).ToHex()}_{(await toHash).ToHex()}",
                         Method = ResultType.Patched
                     };
+                    continue;
                 }
             }
             
